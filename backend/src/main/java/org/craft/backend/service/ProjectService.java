@@ -1,6 +1,7 @@
 package org.craft.backend.service;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.craft.backend.dto.CreateProjectRequest;
 import org.craft.backend.dto.EditProjectRequest;
 import org.craft.backend.dto.ProjectResponse;
@@ -10,18 +11,16 @@ import org.craft.backend.model.Project;
 import org.craft.backend.model.Tag;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.ProjectRepository;
-import org.craft.backend.repository.TagRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@Data
+@RequiredArgsConstructor
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final TagRepository tagRepository;
+    private final TagService tagService;
 
     public List<ProjectResponse> getProjectsForUser(User user) {
         return ProjectResponse.toResponses(projectRepository.findByUser(user));
@@ -80,7 +79,7 @@ public class ProjectService {
         project.setYarnUsed(request.getYarnUsed());
         project.setAmountUsed(request.getAmountUsed());
         project.setImageUrl(request.getImageUrl());
-        project.setStatus(Status.valueOf(request.getStatus()));
+        project.setStatus(request.getStatus());
         project.setNotes(request.getNotes());
         project.setTags(tags);
 
@@ -100,17 +99,12 @@ public class ProjectService {
     }
 
     public List<ProjectResponse> filterByTagName(User user, String tagName) {
-        Tag tag = tagRepository.findByNameIgnoreCase(tagName).orElse(null);
-        return ProjectResponse.toResponses(projectRepository.findByUserAndTag(user, tag));
+        return tagService.getByName(tagName)
+                .map(tag -> ProjectResponse.toResponses(projectRepository.findByUserAndTag(user, tag)))
+                .orElse(List.of());
     }
 
     private List<Tag> getTagsByName(List<String> tagNames) {
-        List<Tag> tags = new ArrayList<>();
-        for (String tagName : tagNames) {
-            Tag tag = tagRepository.findByNameIgnoreCase(tagName)
-                    .orElseGet(() -> tagRepository.save(new Tag(tagName)));
-            tags.add(tag);
-        }
-        return tags;
+        return tagNames.stream().map(tagService::getByNameOrCreate).toList();
     }
 }

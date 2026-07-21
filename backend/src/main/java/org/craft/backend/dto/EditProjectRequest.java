@@ -1,6 +1,7 @@
 package org.craft.backend.dto;
 
 import lombok.Data;
+import org.craft.backend.enums.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class EditProjectRequest {
     private String yarnWeightCategory;
     private String yarnUsed;
     private int amountUsed;
-    private String status;
+    private Status status;
     private String imageUrl;
     private String notes;
     private List<String> tags = new ArrayList<>();
