@@ -1,9 +1,6 @@
 package org.craft.backend.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,32 +21,23 @@ public class Project {
     @GeneratedValue
     private UUID id;
 
-    @NotBlank
-    @Size(max = 255)
     @Column(nullable = false)
     private String patternName;
 
-    @NotBlank
-    @Size(max = 100)
     @Column(nullable = false)
     private String craft;
 
-    @NotBlank
-    @Size(max = 100)
     @Column(nullable = false)
     private String toolType;
 
-    @Size(max = 100)
     private String yarnWeightCategory;
 
-    @Size(max = 255)
     private String yarnUsed;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Min(0)
     private int amountUsed;
 
     @Column(nullable = false)
@@ -60,7 +48,6 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @Size(max = 2048)
     private String imageUrl;
 
     @ManyToMany(mappedBy = "projects")
