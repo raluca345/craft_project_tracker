@@ -19,6 +19,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT DISTINCT t FROM Tag t JOIN t.projects p WHERE p.user = :user AND LOWER(t.name) LIKE LOWER(CONCAT('%', :search, '%'))")
     List<Tag> findByUserAndNameContainingIgnoreCase(@Param("user") User user, @Param("search") String search);
 
+    Optional<Tag> findByNameIgnoreCase(@Param("name") String name);
+
     @Query("SELECT DISTINCT t FROM Tag t JOIN t.projects p WHERE p.user = :user AND LOWER(t.name) = LOWER(:name)")
     Optional<Tag> findByUserAndNameIgnoreCase(@Param("user") User user, @Param("name") String name);
 }

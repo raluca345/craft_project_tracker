@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

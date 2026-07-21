@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "tags")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -28,4 +29,8 @@ public class Tag {
             inverseJoinColumns = @JoinColumn(name = "project_id")
     )
     private List<Project> projects = new ArrayList<>();
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

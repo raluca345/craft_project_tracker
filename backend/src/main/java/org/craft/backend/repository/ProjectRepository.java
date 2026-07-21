@@ -9,9 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface ProjectRepository extends JpaRepository<Project, String> {
     List<Project> findByUser(User user);
+    Optional<Project> findByIdAndUser(UUID id,  User user);
     List<Project> findByUserAndPatternNameContainingIgnoreCase(User user, String name);
     List<Project> findByUserAndStatus(User user, Status status);
 
@@ -33,4 +36,6 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
             @Param("tagNames") List<String> tagNames,
             @Param("tagCount") long tagCount
     );
+
+    void deleteByUserAndId(User user, UUID id);
 }

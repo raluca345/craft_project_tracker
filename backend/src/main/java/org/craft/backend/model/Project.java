@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Builder
-@Table(check = @CheckConstraint(name = "amount_used_non_negative", constraint = "amount_used >= 0"))
+@Table(check = @CheckConstraint(name = "amount_used_non_negative", constraint = "amount_used >= 0"), name = "projects")
 public class Project {
     @Id
     @GeneratedValue
