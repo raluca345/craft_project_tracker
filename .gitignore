@@ -36,4 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
+### Docker ###
+docker-compose.yml
+
+### Spring ###
+**/application.properties
+
 
