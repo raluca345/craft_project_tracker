@@ -24,12 +24,6 @@ public class UserService {
         return UserResponse.toResponse(user);
     }
 
-    public UserResponse getUserByName(String name) {
-        User user = userRepository.findByName(name).orElseThrow(() -> new UserNotFoundException("User " + name + " " +
-                "not found"));
-        return UserResponse.toResponse(user);
-    }
-
     public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with the " +
                 "email " +
