@@ -8,7 +8,7 @@ import org.craft.backend.dto.UserResponse;
 import org.craft.backend.exceptions.UserNotFoundException;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,11 +17,17 @@ import java.util.UUID;
 @Data
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse getUser(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
                 "not found"));
         return UserResponse.toResponse(user);
+    }
+
+    public User getFirst() {
+        return userRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new UserNotFoundException("No users found"));
     }
 
     public UserResponse getUserByEmail(String email) {
@@ -35,7 +41,7 @@ public class UserService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
         return UserResponse.toResponse(user);
@@ -64,7 +70,7 @@ public class UserService {
                 "not found"));
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
         return UserResponse.toResponse(user);

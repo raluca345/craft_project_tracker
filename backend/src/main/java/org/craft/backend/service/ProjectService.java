@@ -1,10 +1,11 @@
 package org.craft.backend.service;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.craft.backend.dto.CreateProjectRequest;
 import org.craft.backend.dto.EditProjectRequest;
 import org.craft.backend.dto.ProjectResponse;
+import org.craft.backend.dto.UpdateNotesRequest;
+import org.craft.backend.dto.UpdateStatusRequest;
 import org.craft.backend.enums.Status;
 import org.craft.backend.exceptions.ProjectNotFoundException;
 import org.craft.backend.model.Project;
@@ -13,6 +14,7 @@ import org.craft.backend.model.User;
 import org.craft.backend.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,12 +24,34 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final TagService tagService;
 
-    public List<ProjectResponse> getProjectsForUser(User user) {
+    public List<ProjectResponse> getProjects(User user) {
         return ProjectResponse.toResponses(projectRepository.findByUser(user));
     }
 
-    public List<ProjectResponse> getProjectByName(User user, String query) {
-        return ProjectResponse.toResponses(projectRepository.findByUserAndPatternNameContainingIgnoreCase(user, query));
+    public List<ProjectResponse> search(User user, String query) {
+        String[] tokens = query.trim().split("\\s+");
+
+        List<String> tagNames = new ArrayList<>();
+        List<String> nameTokens = new ArrayList<>();
+
+        for (String token : tokens) {
+            if (token.startsWith("#") && token.length() > 1) {
+                tagNames.add(token.substring(1));
+            } else {
+                nameTokens.add(token);
+            }
+        }
+
+        String nameQuery = String.join(" ", nameTokens);
+
+        List<Project> projects;
+        if (!tagNames.isEmpty()) {
+            projects = projectRepository.searchByUserAndNameAndAllTags(user, nameQuery, tagNames, tagNames.size());
+        } else {
+            projects = projectRepository.findByUserAndPatternNameContainingIgnoreCase(user, nameQuery);
+        }
+
+        return ProjectResponse.toResponses(projects);
     }
 
     public ProjectResponse createProject(User user, CreateProjectRequest request) {
@@ -49,18 +73,18 @@ public class ProjectService {
         return ProjectResponse.toResponse(projectRepository.save(project));
     }
 
-    public ProjectResponse updateStatus(User user, UUID uuid, Status status) {
+    public ProjectResponse updateStatus(User user, UUID uuid, UpdateStatusRequest request) {
         Project project = projectRepository.findByIdAndUser(uuid, user)
                 .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
-        project.setStatus(status);
+        project.setStatus(request.getStatus());
 
         return ProjectResponse.toResponse(projectRepository.save(project));
     }
 
-    public ProjectResponse updateNotes(User user, UUID uuid, String notes) {
+    public ProjectResponse updateNotes(User user, UUID uuid, UpdateNotesRequest request) {
         Project project = projectRepository.findByIdAndUser(uuid, user)
                 .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
-        project.setNotes(notes);
+        project.setNotes(request.getNotes());
 
         return ProjectResponse.toResponse(projectRepository.save(project));
     }
@@ -88,20 +112,6 @@ public class ProjectService {
 
     public void delete(User user, UUID id) {
         projectRepository.deleteByUserAndId(user, id);
-    }
-
-    public List<ProjectResponse> getByStatus(User user, Status status) {
-        return ProjectResponse.toResponses(projectRepository.findByUserAndStatus(user, status));
-    }
-
-    public List<ProjectResponse> filterByTag(User user, Tag tag) {
-        return ProjectResponse.toResponses(projectRepository.findByUserAndTag(user, tag));
-    }
-
-    public List<ProjectResponse> filterByTagName(User user, String tagName) {
-        return tagService.getByName(tagName)
-                .map(tag -> ProjectResponse.toResponses(projectRepository.findByUserAndTag(user, tag)))
-                .orElse(List.of());
     }
 
     private List<Tag> getTagsByName(List<String> tagNames) {

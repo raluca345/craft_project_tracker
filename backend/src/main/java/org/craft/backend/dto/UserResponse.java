@@ -25,4 +25,14 @@ public class UserResponse {
         response.setProjects(user.getProjects());
         return response;
     }
+
+    public static User toEntity(UserResponse response) {
+        User user = new User();
+        user.setId(response.getId());
+        user.setName(response.getName());
+        user.setEmail(response.getEmail());
+        user.setPassword(response.getPassword());
+        user.setProjects(response.getProjects());
+        return user;
+    }
 }
