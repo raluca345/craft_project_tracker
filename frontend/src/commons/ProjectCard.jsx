@@ -3,7 +3,10 @@ import { useDraggable } from "@dnd-kit/react";
 import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 
-export default function ProjectCard({ id = "project-card", projectType = "crochet" }) {
+export default function ProjectCard({
+  id = "project-card",
+  projectType = "crochet",
+}) {
   const { ref } = useDraggable({
     id,
   });
@@ -45,7 +48,7 @@ export default function ProjectCard({ id = "project-card", projectType = "croche
             <div className="flex items-center gap-1.5">
               <ProjectTypeIcon
                 type={projectType}
-                className="w-6 h-5 font-bold"
+                className="w-5 h-5 font-bold"
               />
               <p className="font-semibold text-slate-800">Project</p>
             </div>
