@@ -5,12 +5,13 @@ export async function getStatuses() {
   return handleResponse(res);
 }
 
+const STATUS_LABELS = {
+  TO_DO: "Wishlist",
+  IN_PROGRESS: "On the Hook",
+  ASSEMBLING: "Assembling",
+  FINISHED: "Finished",
+};
+
 export function formatStatus(status) {
-  return (
-    status
-      //basically does IN_PROGRESS -> In Progress
-      .replace(/_/g, " ")
-      .toLowerCase()
-      .replace(/\b\w/g, (c) => c.toUpperCase())
-  );
+  return STATUS_LABELS[status] ?? status;
 }

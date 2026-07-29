@@ -5,6 +5,25 @@ import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 
 const MAX_VISIBLE_TAGS = 2;
 
+const BORDER_COLORS = {
+  TO_DO: "border-rose-300",
+  IN_PROGRESS: "border-orange-300",
+  ASSEMBLING: "border-teal-300",
+  FINISHED: "border-sky-300",
+};
+
+const PLACEHOLDER_CLASSES = {
+  TO_DO: "placeholder-texture-rose",
+  IN_PROGRESS: "placeholder-texture-orange",
+  ASSEMBLING: "placeholder-texture-teal",
+  FINISHED: "placeholder-texture-sky",
+};
+
+function cardRotation(id) {
+  const hash = parseInt(id.replace(/-/g, "").slice(0, 8), 16);
+  return ((hash % 5) - 2) + "deg";
+}
+
 export default function ProjectCard({ project }) {
   const { ref } = useDraggable({
     id: project.id,
@@ -15,29 +34,32 @@ export default function ProjectCard({ project }) {
 
   return (
     <div ref={ref} className="card-container">
-      <div className="card flex h-70 w-50 flex-col overflow-hidden rounded-2xl border border-slate-300 bg-white my-2 mx-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]">
-        <div className="relative min-h-0 flex-1 bg-linear-to-br from-fuchsia-100 to-fuchsia-200">
-          <div className="action-buttons absolute top-4 right-3 flex flex-row gap-2 text-slate-700">
+      <div
+        className={`card flex h-70 w-50 flex-col overflow-hidden rounded-2xl border-2 border-dashed ${BORDER_COLORS[project.status] ?? "border-slate-300"} bg-white my-1 mx-3 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]`}
+        style={{ transform: `rotate(${cardRotation(project.id)})` }}
+      >
+        <div className={`relative min-h-0 flex-1 ${PLACEHOLDER_CLASSES[project.status]}`}>
+          <div className="action-buttons absolute top-4 right-3 flex flex-row gap-1.5 text-slate-600">
             <button
               type="button"
-              className="cursor-pointer transition-colors hover:text-(--accent-color2)"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-white/70 backdrop-blur-xs transition-colors hover:bg-white hover:text-amber-600"
               aria-label="Open notes"
             >
-              <FaNoteSticky />
+              <FaNoteSticky className="text-xs" />
             </button>
             <button
               type="button"
-              className="cursor-pointer transition-colors hover:text-(--accent-color2)"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-white/70 backdrop-blur-xs transition-colors hover:bg-white hover:text-amber-600"
               aria-label="Edit project"
             >
-              <FaPenToSquare />
+              <FaPenToSquare className="text-xs" />
             </button>
             <button
               type="button"
-              className="cursor-pointer transition-colors hover:text-red-600"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-white/70 backdrop-blur-xs transition-colors hover:bg-white hover:text-red-600"
               aria-label="Delete project"
             >
-              <FaTrashCan />
+              <FaTrashCan className="text-xs" />
             </button>
           </div>
           <div className="h-full w-full flex items-center justify-center text-s text-slate-600">
@@ -47,9 +69,7 @@ export default function ProjectCard({ project }) {
                 alt=""
                 className="h-full w-full object-cover"
               />
-            ) : (
-              "Cover image"
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -64,32 +84,19 @@ export default function ProjectCard({ project }) {
                 {project.patternName}
               </p>
             </div>
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[0.65rem] font-bold text-slate-500">
-                Craft
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                <span className="rounded-md bg-fuchsia-300 px-2 py-0.5 text-sm font-bold text-(--accent-color2) shadow-sm">
-                  {project.craft}
-                </span>
-              </div>
-            </div>
             <div className="mt-2 flex flex-col items-start gap-1">
-              <span className="text-[0.65rem] font-bold text-slate-500">
-                Tags
-              </span>
               <div className="flex flex-wrap gap-1">
                 {visibleTags.map((tag) => (
                   <span
                     key={tag}
                     title={tag}
-                    className="inline-block max-w-17.5 overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-fuchsia-200 px-2 py-0.5 text-sm font-bold text-(--accent-color2) shadow-sm"
+                    className="inline-block max-w-17.5 overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-amber-100 px-2 py-0.5 text-sm font-bold text-amber-700 shadow-sm"
                   >
                     #{tag}
                   </span>
                 ))}
                 {extraTagCount > 0 && (
-                  <span className="rounded-md border border-fuchsia-300 bg-slate-50 px-2 py-0.5 text-sm font-bold text-slate-600 shadow-sm">
+                  <span className="rounded-md border border-amber-200 bg-slate-50 px-2 py-0.5 text-sm font-bold text-slate-500 shadow-sm">
                     +{extraTagCount}
                   </span>
                 )}

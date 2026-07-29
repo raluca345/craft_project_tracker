@@ -5,6 +5,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 
+const HEADING_COLORS = {
+  TO_DO: "text-rose-700",
+  IN_PROGRESS: "text-orange-600",
+  ASSEMBLING: "text-teal-600",
+  FINISHED: "text-sky-700",
+};
+
 export default function ProjectLane({ id, title, children }) {
   const { ref } = useDroppable({
     id,
@@ -20,10 +27,11 @@ export default function ProjectLane({ id, title, children }) {
   return (
     <section
       ref={ref}
-      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]"
+      className="w-full"
     >
-      <div className="mb-3 flex items-center justify-between gap-4">
-        <h2 className="font-semibold text-slate-700">{title}</h2>
+      <div className="mb-3 flex items-center gap-4">
+        <h2 className={`font-semibold ${HEADING_COLORS[id] ?? "text-slate-700"}`}>{title}</h2>
+        <div className="flex-1 border-t border-slate-200" />
       </div>
       <Swiper
         modules={[Navigation]}
@@ -36,7 +44,7 @@ export default function ProjectLane({ id, title, children }) {
         onResize={updateCanNavigate}
         onSlidesUpdated={updateCanNavigate}
         slidesPerView="auto"
-        spaceBetween={16}
+        spaceBetween={8}
         className={`status-carousel min-h-78 ${
           canNavigate ? "" : "status-carousel--locked"
         }`}
@@ -47,8 +55,11 @@ export default function ProjectLane({ id, title, children }) {
           </SwiperSlide>
         ))}
         <SwiperSlide className="w-auto!">
-          <div className="flex h-70 w-50 my-2 mx-6 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
-            Drop here
+          <div className="flex h-70 w-50 my-2 mx-6 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
+            <svg className="w-6 h-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 0v4m0-4h4m-4 0H8" />
+            </svg>
+            <span>Nothing here yet</span>
           </div>
         </SwiperSlide>
       </Swiper>

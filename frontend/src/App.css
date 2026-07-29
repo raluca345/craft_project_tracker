@@ -27,3 +27,31 @@
   font-size: 1rem;
   font-weight: 700;
 }
+
+.placeholder-texture-rose {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(to bottom right, #fecdd3, #fda4af);
+}
+
+.placeholder-texture-orange {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(to bottom right, #fed7aa, #fdba74);
+}
+
+.placeholder-texture-teal {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(to bottom right, #99f6e4, #5eead4);
+}
+
+.placeholder-texture-sky {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(to bottom right, #bae6fd, #7dd3fc);
+}
