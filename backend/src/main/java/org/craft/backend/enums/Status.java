@@ -1,7 +1,8 @@
 package org.craft.backend.enums;
 
 public enum Status {
-    NOT_STARTED,
+    TO_DO,
     IN_PROGRESS,
+    ASSEMBLING,
     FINISHED
 }
