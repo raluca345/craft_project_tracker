@@ -64,7 +64,7 @@ public class ProjectService {
                 .toolType(request.getToolType())
                 .yarnWeightCategory(request.getYarnWeightCategory())
                 .yarnUsed(request.getYarnUsed())
-                .status(Status.NOT_STARTED)
+                .status(Status.TO_DO)
                 .notes(request.getNotes())
                 .imageUrl(request.getImageUrl())
                 .tags(tags)

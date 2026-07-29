@@ -20,7 +20,7 @@ export default function ProjectLane({ id, title, children }) {
   return (
     <section
       ref={ref}
-      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm"
+      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]"
     >
       <div className="mb-3 flex items-center justify-between gap-4">
         <h2 className="font-semibold text-slate-700">{title}</h2>
@@ -41,19 +41,16 @@ export default function ProjectLane({ id, title, children }) {
           canNavigate ? "" : "status-carousel--locked"
         }`}
       >
-        {cards.length > 0 ? (
-          cards.map((card, index) => (
-            <SwiperSlide key={card.key ?? index} className="w-auto!">
-              {card}
-            </SwiperSlide>
-          ))
-        ) : (
-          <SwiperSlide className="w-auto!">
-            <div className="flex h-70 w-50 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
-              Drop here
-            </div>
+        {cards.map((card, index) => (
+          <SwiperSlide key={card.key ?? index} className="w-auto!">
+            {card}
           </SwiperSlide>
-        )}
+        ))}
+        <SwiperSlide className="w-auto!">
+          <div className="flex h-70 w-50 my-2 mx-6 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
+            Drop here
+          </div>
+        </SwiperSlide>
       </Swiper>
     </section>
   );

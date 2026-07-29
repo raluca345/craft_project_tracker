@@ -5,7 +5,7 @@ import knittingNeedles from "./assets/icons/noun-straight-5375566.svg";
 import sewingNeedle from "./assets/icons/noun-sewing-needle-181392.svg";
 
 export const PROJECT_TYPE_ICON_META = {
-  crochet: {
+  crocheting: {
     src: crochetHook,
     alt: "Crochet hook icon",
     creditLabel: "crochet icon",
@@ -36,7 +36,10 @@ export const PROJECT_TYPE_ICON_META = {
 };
 
 export const PROJECT_TYPE_ICONS = Object.fromEntries(
-  Object.entries(PROJECT_TYPE_ICON_META).map(([key, value]) => [key, value.src]),
+  Object.entries(PROJECT_TYPE_ICON_META).map(([key, value]) => [
+    key,
+    value.src,
+  ]),
 );
 
 export const PROJECT_TYPE_ICON_CREDITS = Object.entries(

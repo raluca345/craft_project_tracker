@@ -43,7 +43,7 @@ public class Project {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Status status = Status.NOT_STARTED;
+    private Status status = Status.TO_DO;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
