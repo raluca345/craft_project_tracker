@@ -7,7 +7,7 @@ export async function getStatuses() {
 
 const STATUS_LABELS = {
   TO_DO: "Wishlist",
-  IN_PROGRESS: "On the Hook",
+  IN_PROGRESS: "On the Needles",
   ASSEMBLING: "Assembling",
   FINISHED: "Finished",
 };
