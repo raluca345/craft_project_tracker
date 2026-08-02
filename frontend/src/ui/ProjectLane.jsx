@@ -26,7 +26,7 @@ export default function ProjectLane({ id, title, children }) {
 
   return (
     <section ref={ref} className="w-full">
-      <div className="mb-3 flex items-center gap-4">
+      <div className="m-4 flex items-center gap-4">
         <h2
           className={`font-semibold ${HEADING_COLORS[id] ?? "text-slate-700"}`}
         >
@@ -56,7 +56,7 @@ export default function ProjectLane({ id, title, children }) {
           </SwiperSlide>
         ))}
         <SwiperSlide className="w-auto!">
-          <div className="flex h-70 w-50 mt-8 mb-2 mx-6 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
+          <div className="flex h-70 w-50 mt-8 mb-2 mx-6 flex-col items-center justify-center gap-2 rounded-2xl border-5 border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
             <svg
               className="w-6 h-6 text-slate-300"
               fill="none"

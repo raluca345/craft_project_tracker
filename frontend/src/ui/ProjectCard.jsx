@@ -4,6 +4,8 @@ import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 import TapeCorner from "./TapeCorner.jsx";
 
+//TODO: shared modal (text-URL images) → wire up action buttons → real R2 upload last
+
 const MAX_VISIBLE_TAGS = 2;
 
 const BORDER_COLORS = {
