@@ -56,7 +56,12 @@ export default function ProjectLane({ id, title, children }) {
           </SwiperSlide>
         ))}
         <SwiperSlide className="w-auto!">
-          <div className="flex h-70 w-50 mt-8 mb-2 mx-6 flex-col items-center justify-center gap-2 rounded-2xl border-5 border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400">
+          <button
+            type="button"
+            command="show-modal"
+            commandfor="dialog-ex"
+            className="flex h-70 w-50 mt-8 mb-2 mx-6 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-5 border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400 [font:inherit]"
+          >
             <svg
               className="w-6 h-6 text-slate-300"
               fill="none"
@@ -70,8 +75,8 @@ export default function ProjectLane({ id, title, children }) {
                 d="M12 8v4m0 0v4m0-4h4m-4 0H8"
               />
             </svg>
-            <span>Add new</span>
-          </div>
+            Add new
+          </button>
         </SwiperSlide>
       </Swiper>
     </section>

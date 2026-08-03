@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Board from "./commons/Board";
-import ProjectCard from "./commons/ProjectCard";
-import ProjectLane from "./commons/ProjectLane";
+import Board from "./ui/Board";
+import ProjectCard from "./ui/ProjectCard";
+import ProjectLane from "./ui/ProjectLane";
 import { DragDropProvider } from "@dnd-kit/react";
 import { getStatuses, formatStatus } from "./api/apiStatuses";
-import { getProjects, updateProjectStatus } from "./api/apiProjects";
-import Footer from "./commons/Footer";
+import {
+  getProjects,
+  updateProjectStatus,
+  createProject,
+} from "./api/apiProjects";
+import Footer from "./ui/Footer";
 
 function App() {
   const [lane, setLane] = useState(null);
@@ -19,8 +23,14 @@ function App() {
   }, []);
 
   const projectsByStatus = Object.fromEntries(
-    statuses.map((s) => [s, projects.filter((p) => p.status === s)])
+    statuses.map((s) => [s, projects.filter((p) => p.status === s)]),
   );
+
+  function handleCreateProject(project) {
+    createProject(project).then((created) => {
+      setProjects((prev) => [...prev, created]);
+    });
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,8 +45,8 @@ function App() {
           setLane(newStatus);
           setProjects((prev) =>
             prev.map((p) =>
-              p.id === source?.id ? { ...p, status: newStatus } : p
-            )
+              p.id === source?.id ? { ...p, status: newStatus } : p,
+            ),
           );
           updateProjectStatus(source?.id, newStatus);
         }}
@@ -45,10 +55,14 @@ function App() {
           <h1 className="flex p-4 m-2 text-2xl font-bold text-(--accent-color2)">
             Craft Project Tracker
           </h1>
-          <Board>
+          <Board onSave={handleCreateProject}>
             {statuses.length > 0 ? (
               statuses.map((status) => (
-                <ProjectLane key={status} id={status} title={formatStatus(status)}>
+                <ProjectLane
+                  key={status}
+                  id={status}
+                  title={formatStatus(status)}
+                >
                   {projectsByStatus[status]?.map((project) => (
                     <ProjectCard key={project.id} project={project} />
                   ))}

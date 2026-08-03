@@ -1,7 +1,7 @@
 import { handleResponse, API_ROOT } from "./apiCore";
 
 export async function getStatuses() {
-  const res = await fetch(`${API_ROOT}/statuses`);
+  const res = await fetch(`${API_ROOT}/me/statuses`);
   return handleResponse(res);
 }
 

@@ -1,5 +1,5 @@
 export const API_BASE = "http://localhost:8080/api/v1/me/projects";
-export const API_ROOT = "http://localhost:8080/api/v1/me";
+export const API_ROOT = "http://localhost:8080/api/v1";
 
 export async function handleResponse(res) {
   if (!res.ok) {
