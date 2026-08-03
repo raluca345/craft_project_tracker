@@ -27,7 +27,7 @@ function cardRotation(id) {
   return (hash % 5) - 2 + "deg";
 }
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onEdit }) {
   const { ref } = useDraggable({
     id: project.id,
   });
@@ -63,6 +63,7 @@ export default function ProjectCard({ project }) {
               </button>
               <button
                 type="button"
+                onClick={() => onEdit(project)}
                 className="flex items-center justify-center w-7 h-7 rounded-full bg-white/70 backdrop-blur-xs transition-colors hover:bg-white hover:text-amber-600"
                 aria-label="Edit project"
               >

@@ -9,6 +9,7 @@ import {
   getProjects,
   updateProjectStatus,
   createProject,
+  editProject,
 } from "./api/apiProjects";
 import Footer from "./ui/Footer";
 
@@ -16,6 +17,7 @@ function App() {
   const [lane, setLane] = useState(null);
   const [statuses, setStatuses] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [editingProject, setEditingProject] = useState(null);
 
   useEffect(() => {
     getStatuses().then(setStatuses);
@@ -26,10 +28,26 @@ function App() {
     statuses.map((s) => [s, projects.filter((p) => p.status === s)]),
   );
 
-  function handleCreateProject(project) {
-    createProject(project).then((created) => {
+  function handleEditProject(project) {
+    setEditingProject(project);
+  }
+
+  function handleSaveProject(project) {
+    if (project.id) {
+      return editProject(project.id, project).then((updated) => {
+        setProjects((prev) =>
+          prev.map((p) => (p.id === updated.id ? updated : p)),
+        );
+        setEditingProject(null);
+      });
+    }
+    return createProject(project).then((created) => {
       setProjects((prev) => [...prev, created]);
     });
+  }
+
+  function handleCloseModal() {
+    setEditingProject(null);
   }
 
   return (
@@ -55,13 +73,18 @@ function App() {
           <h1 className="flex p-4 m-2 text-2xl font-bold text-(--accent-color2)">
             Craft Project Tracker
           </h1>
-          <Board onSave={handleCreateProject}>
+          <Board
+            onSave={handleSaveProject}
+            existingProject={editingProject}
+            onClose={handleCloseModal}
+          >
             {statuses.length > 0 ? (
               statuses.map((status) => (
                 <ProjectLane
                   key={status}
                   id={status}
                   title={formatStatus(status)}
+                  onEdit={handleEditProject}
                 >
                   {projectsByStatus[status]?.map((project) => (
                     <ProjectCard key={project.id} project={project} />

@@ -1,4 +1,4 @@
-import { Children, useCallback, useState } from "react";
+import { Children, cloneElement, useCallback, useState } from "react";
 import { useDroppable } from "@dnd-kit/react";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,12 +12,14 @@ const HEADING_COLORS = {
   FINISHED: "text-sky-700",
 };
 
-export default function ProjectLane({ id, title, children }) {
+export default function ProjectLane({ id, title, children, onEdit }) {
   const { ref } = useDroppable({
     id,
   });
   const [canNavigate, setCanNavigate] = useState(false);
-  const cards = Children.toArray(children);
+  const cards = Children.map(children, (card) =>
+    cloneElement(card, { onEdit }),
+  );
   const updateCanNavigate = useCallback((swiper) => {
     if (!swiper || swiper.destroyed) return;
 

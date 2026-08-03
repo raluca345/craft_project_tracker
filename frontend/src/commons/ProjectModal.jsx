@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FormField from "../ui/FormField";
 import AutocompleteField from "../ui/AutocompleteField";
 import TagInput from "../ui/TagInput";
+import { formatStatus } from "../api/apiStatuses";
 
 const INPUT_STYLE =
   "rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-fuchsia-400 focus:outline-none";
@@ -32,6 +33,8 @@ const INITIAL_FORM_STATE = {
   toolType: "",
   yarnWeightCategory: "",
   yarnUsed: "",
+  amountUsed: 0,
+  status: "TO_DO",
   imageUrl: "",
   notes: "",
   tags: [],
@@ -43,6 +46,8 @@ const INITIAL_ERRORS = {
   toolType: null,
   yarnWeightCategory: null,
   yarnUsed: null,
+  amountUsed: null,
+  status: null,
   imageUrl: null,
   notes: null,
   tags: null,
@@ -77,6 +82,14 @@ function validate(formState) {
     errors.yarnUsed = "Yarn used must be 255 characters or fewer";
   }
 
+  if (formState.amountUsed < 0) {
+    errors.amountUsed = "Amount used cannot be negative";
+  }
+
+  if (!formState.status) {
+    errors.status = "Status is required";
+  }
+
   if (formState.imageUrl.length > 2048) {
     errors.imageUrl = "Image URL must be 2048 characters or fewer";
   }
@@ -92,10 +105,38 @@ function hasErrors(errors) {
   return Object.values(errors).some(Boolean);
 }
 
-export default function ProjectModal({ onSave }) {
+export default function ProjectModal({
+  onSave,
+  onClose,
+  existingProject = null,
+}) {
   const dialogRef = useRef(null);
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [errors, setErrors] = useState(INITIAL_ERRORS);
+
+  useEffect(() => {
+    if (existingProject) {
+      setFormState({
+        patternName: existingProject.patternName ?? "",
+        craft: existingProject.craft ?? "",
+        toolType: existingProject.toolType ?? "",
+        yarnWeightCategory: existingProject.yarnWeightCategory ?? "",
+        yarnUsed: existingProject.yarnUsed ?? "",
+        amountUsed: existingProject.amountUsed ?? 0,
+        status: existingProject.status ?? "TO_DO",
+        imageUrl: existingProject.imageUrl ?? "",
+        notes: existingProject.notes ?? "",
+        tags: existingProject.tags ?? [],
+      });
+      setErrors(INITIAL_ERRORS);
+      if (!dialogRef.current?.open) {
+        dialogRef.current?.showModal();
+      }
+    } else {
+      setFormState(INITIAL_FORM_STATE);
+      setErrors(INITIAL_ERRORS);
+    }
+  }, [existingProject]);
 
   function updateField(field, value) {
     setFormState((prev) => ({ ...prev, [field]: value }));
@@ -108,16 +149,33 @@ export default function ProjectModal({ onSave }) {
     setErrors(nextErrors);
     if (hasErrors(nextErrors)) return;
 
-    const payload = {
-      patternName: formState.patternName,
-      craft: formState.craft,
-      toolType: formState.toolType,
-      yarnWeightCategory: formState.yarnWeightCategory || null,
-      yarnUsed: formState.yarnUsed || null,
-      imageUrl: formState.imageUrl || null,
-      notes: formState.notes || null,
-      tags: formState.tags,
-    };
+    let payload;
+    if (existingProject) {
+      payload = {
+        id: existingProject.id,
+        patternName: formState.patternName,
+        craft: formState.craft,
+        toolType: formState.toolType,
+        yarnWeightCategory: formState.yarnWeightCategory || null,
+        yarnUsed: formState.yarnUsed || null,
+        amountUsed: Number(formState.amountUsed) || 0,
+        status: formState.status,
+        imageUrl: formState.imageUrl || null,
+        notes: formState.notes || null,
+        tags: formState.tags,
+      };
+    } else {
+      payload = {
+        patternName: formState.patternName,
+        craft: formState.craft,
+        toolType: formState.toolType,
+        yarnWeightCategory: formState.yarnWeightCategory || null,
+        yarnUsed: formState.yarnUsed || null,
+        imageUrl: formState.imageUrl || null,
+        notes: formState.notes || null,
+        tags: formState.tags,
+      };
+    }
 
     Promise.resolve(onSave(payload)).then(() => {
       dialogRef.current?.close();
@@ -130,10 +188,13 @@ export default function ProjectModal({ onSave }) {
     <dialog
       ref={dialogRef}
       id="dialog-ex"
+      onClose={onClose}
       className="m-auto w-96 max-w-[90vw] overflow-auto scrollbar-thumb-fuchsia-100 scrollbar-track-fuchsia-200 rounded-2xl p-6 shadow-xl"
     >
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
-        <h2 className="text-lg font-semibold text-slate-800">New Project</h2>
+        <h2 className="text-lg font-semibold text-slate-800">
+          {existingProject ? "Edit Project" : "New Project"}
+        </h2>
         <FormField label="Pattern Name" error={errors.patternName}>
           <input
             type="text"
@@ -180,6 +241,42 @@ export default function ProjectModal({ onSave }) {
             onChange={(e) => updateField("yarnUsed", e.target.value)}
           />
         </FormField>
+        {existingProject && (
+          <>
+            <FormField label="Amount Used" error={errors.amountUsed}>
+              <div className="relative">
+                <input
+                  type="number"
+                  id="amount-used"
+                  min="0"
+                  className={`${
+                    errors.amountUsed ? INPUT_ERROR_STYLE : INPUT_STYLE
+                  } pr-10`}
+                  value={formState.amountUsed}
+                  onChange={(e) => updateField("amountUsed", e.target.value)}
+                />
+                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-slate-400">
+                  g
+                </span>
+              </div>
+            </FormField>
+            <FormField label="Status" error={errors.status}>
+              <select
+                id="project-status"
+                className={errors.status ? INPUT_ERROR_STYLE : INPUT_STYLE}
+                value={formState.status}
+                onChange={(e) => updateField("status", e.target.value)}
+              >
+                <option value="TO_DO">{formatStatus("TO_DO")}</option>
+                <option value="IN_PROGRESS">
+                  {formatStatus("IN_PROGRESS")}
+                </option>
+                <option value="ASSEMBLING">{formatStatus("ASSEMBLING")}</option>
+                <option value="FINISHED">{formatStatus("FINISHED")}</option>
+              </select>
+            </FormField>
+          </>
+        )}
         <FormField label="Image URL" error={errors.imageUrl}>
           <input
             type="url"
