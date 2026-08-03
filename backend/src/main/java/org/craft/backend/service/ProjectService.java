@@ -115,6 +115,6 @@ public class ProjectService {
     }
 
     private List<Tag> getTagsByName(List<String> tagNames) {
-        return tagNames.stream().map(tagService::getByNameOrCreate).toList();
+        return new ArrayList<>(tagNames.stream().map(tagService::getByNameOrCreate).toList());
     }
 }
