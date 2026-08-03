@@ -54,6 +54,7 @@ export default function TagInput({ value, onChange }) {
               type="button"
               onClick={() => removeTag(tag)}
               aria-label={`Remove ${tag}`}
+              className="cursor-pointer"
             >
               ×
             </button>
