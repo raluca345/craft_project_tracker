@@ -31,6 +31,7 @@ const INITIAL_FORM_STATE = {
   patternName: "",
   craft: "",
   toolType: "",
+  toolSize: "",
   yarnWeightCategory: "",
   yarnUsed: "",
   amountUsed: 0,
@@ -44,6 +45,7 @@ const INITIAL_ERRORS = {
   patternName: null,
   craft: null,
   toolType: null,
+  toolSize: null,
   yarnWeightCategory: null,
   yarnUsed: null,
   amountUsed: null,
@@ -72,6 +74,12 @@ function validate(formState) {
     errors.toolType = "Tool is required";
   } else if (formState.toolType.length > 100) {
     errors.toolType = "Tool must be 100 characters or fewer";
+  }
+
+  if (!formState.toolSize.trim()) {
+    errors.toolSize = "Tool size is required";
+  } else if (formState.toolSize.length > 100) {
+    errors.toolSize = "Tool size must be 100 characters or fewer";
   }
 
   if (formState.yarnWeightCategory.length > 100) {
@@ -120,6 +128,7 @@ export default function ProjectModal({
         patternName: existingProject.patternName ?? "",
         craft: existingProject.craft ?? "",
         toolType: existingProject.toolType ?? "",
+        toolSize: existingProject.toolSize ?? "",
         yarnWeightCategory: existingProject.yarnWeightCategory ?? "",
         yarnUsed: existingProject.yarnUsed ?? "",
         amountUsed: existingProject.amountUsed ?? 0,
@@ -156,6 +165,7 @@ export default function ProjectModal({
         patternName: formState.patternName,
         craft: formState.craft,
         toolType: formState.toolType,
+        toolSize: formState.toolSize,
         yarnWeightCategory: formState.yarnWeightCategory || null,
         yarnUsed: formState.yarnUsed || null,
         amountUsed: Number(formState.amountUsed) || 0,
@@ -169,6 +179,7 @@ export default function ProjectModal({
         patternName: formState.patternName,
         craft: formState.craft,
         toolType: formState.toolType,
+        toolSize: formState.toolSize,
         yarnWeightCategory: formState.yarnWeightCategory || null,
         yarnUsed: formState.yarnUsed || null,
         imageUrl: formState.imageUrl || null,
@@ -219,6 +230,16 @@ export default function ProjectModal({
           suggestions={TOOL_SUGGESTIONS}
           error={errors.toolType}
         />
+        <FormField label="Tool Size" error={errors.toolSize}>
+          <input
+            type="text"
+            id="tool-size"
+            placeholder="e.g. 5.0 mm / US 8"
+            className={errors.toolSize ? INPUT_ERROR_STYLE : INPUT_STYLE}
+            value={formState.toolSize}
+            onChange={(e) => updateField("toolSize", e.target.value)}
+          />
+        </FormField>
         <FormField label="Yarn Weight" error={errors.yarnWeightCategory}>
           <input
             type="text"

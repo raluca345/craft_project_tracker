@@ -15,6 +15,7 @@ public class ProjectResponse {
     private String patternName;
     private String craft;
     private String toolType;
+    private String toolSize;
     private String yarnWeightCategory;
     private String yarnUsed;
     private int amountUsed;
@@ -29,6 +30,7 @@ public class ProjectResponse {
         response.setPatternName(project.getPatternName());
         response.setCraft(project.getCraft());
         response.setToolType(project.getToolType());
+        response.setToolSize(project.getToolSize());
         response.setYarnWeightCategory(project.getYarnWeightCategory());
         response.setYarnUsed(project.getYarnUsed());
         response.setAmountUsed(project.getAmountUsed());

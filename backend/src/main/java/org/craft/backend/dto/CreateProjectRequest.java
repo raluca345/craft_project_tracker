@@ -21,6 +21,10 @@ public class CreateProjectRequest {
     @Size(max = 100)
     private String toolType;
 
+    @NotBlank
+    @Size(max = 100)
+    private String toolSize;
+
     @Size(max = 100)
     private String yarnWeightCategory;
 

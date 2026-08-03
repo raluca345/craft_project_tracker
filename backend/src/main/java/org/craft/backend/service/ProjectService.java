@@ -62,6 +62,7 @@ public class ProjectService {
                 .patternName(request.getPatternName())
                 .craft(request.getCraft())
                 .toolType(request.getToolType())
+                .toolSize(request.getToolSize())
                 .yarnWeightCategory(request.getYarnWeightCategory())
                 .yarnUsed(request.getYarnUsed())
                 .status(Status.TO_DO)
@@ -99,6 +100,7 @@ public class ProjectService {
         project.setPatternName(request.getPatternName());
         project.setCraft(request.getCraft());
         project.setToolType(request.getToolType());
+        project.setToolSize(request.getToolSize());
         project.setYarnWeightCategory(request.getYarnWeightCategory());
         project.setYarnUsed(request.getYarnUsed());
         project.setAmountUsed(request.getAmountUsed());

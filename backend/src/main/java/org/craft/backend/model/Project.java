@@ -30,6 +30,9 @@ public class Project {
     @Column(nullable = false)
     private String toolType;
 
+    @Column(nullable = false)
+    private String toolSize;
+
     private String yarnWeightCategory;
 
     private String yarnUsed;
