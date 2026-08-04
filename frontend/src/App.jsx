@@ -13,6 +13,64 @@ import {
 } from "./api/apiProjects";
 import Footer from "./ui/Footer";
 
+function parseProjectSlotId(id) {
+  if (typeof id !== "string" || !id.startsWith("project-slot:")) {
+    return null;
+  }
+
+  const [, status, index] = id.split(":");
+  const parsedIndex = Number(index);
+
+  if (!status || Number.isNaN(parsedIndex)) {
+    return null;
+  }
+
+  return { status, index: parsedIndex };
+}
+
+function reorderProject(prevProjects, projectId, status, toIndex) {
+  const laneProjects = prevProjects.filter((p) => p.status === status);
+  const fromIndex = laneProjects.findIndex((p) => p.id === projectId);
+
+  if (fromIndex === -1 || fromIndex === toIndex) {
+    return prevProjects;
+  }
+
+  const reordered = [...laneProjects];
+  const [moved] = reordered.splice(fromIndex, 1);
+  reordered.splice(toIndex, 0, moved);
+
+  let nextLaneIndex = 0;
+
+  return prevProjects.map((project) =>
+    project.status === status ? reordered[nextLaneIndex++] : project,
+  );
+}
+
+function moveProjectToStatus(prevProjects, projectId, status, toIndex) {
+  const movedProject = prevProjects.find((p) => p.id === projectId);
+
+  if (!movedProject) {
+    return prevProjects;
+  }
+
+  const withoutMoved = prevProjects.filter((p) => p.id !== projectId);
+  const nextLaneProjects = withoutMoved
+    .filter((p) => p.status === status)
+    .map((p) => p.id);
+  const insertBeforeProjectId = nextLaneProjects[toIndex];
+
+  const movedWithStatus = { ...movedProject, status };
+
+  if (!insertBeforeProjectId) {
+    return [...withoutMoved, movedWithStatus];
+  }
+
+  return withoutMoved.flatMap((project) =>
+    project.id === insertBeforeProjectId ? [movedWithStatus, project] : project,
+  );
+}
+
 function App() {
   const [lane, setLane] = useState(null);
   const [statuses, setStatuses] = useState([]);
@@ -32,18 +90,17 @@ function App() {
     setEditingProject(project);
   }
 
-  function handleSaveProject(project) {
+  async function handleSaveProject(project) {
     if (project.id) {
-      return editProject(project.id, project).then((updated) => {
-        setProjects((prev) =>
-          prev.map((p) => (p.id === updated.id ? updated : p)),
-        );
-        setEditingProject(null);
-      });
-    }
-    return createProject(project).then((created) => {
+      const updated = await editProject(project.id, project);
+      setProjects((prev) =>
+        prev.map((p) => (p.id === updated.id ? updated : p)),
+      );
+      setEditingProject(null);
+    } else {
+      const created = await createProject(project);
       setProjects((prev) => [...prev, created]);
-    });
+    }
   }
 
   function handleCloseModal() {
@@ -57,16 +114,40 @@ function App() {
           if (event.canceled) return;
 
           const { source, target } = event.operation;
+          const sourceId = source?.id;
+          if (sourceId == null) return;
+
+          const project = projects.find((p) => p.id === sourceId);
+          if (!project) return;
+
+          const targetSlot = parseProjectSlotId(target?.id);
+          if (targetSlot && statuses.includes(targetSlot.status)) {
+            if (targetSlot.status === project.status) {
+              setProjects((prev) =>
+                reorderProject(prev, sourceId, project.status, targetSlot.index),
+              );
+              return;
+            }
+
+            setLane(targetSlot.status);
+            setProjects((prev) =>
+              moveProjectToStatus(prev, sourceId, targetSlot.status, targetSlot.index),
+            );
+            updateProjectStatus(sourceId, targetSlot.status);
+            return;
+          }
+
+          // Cross-lane move: target is a lane (status id)
           const newStatus = target?.id;
           if (!statuses.includes(newStatus)) return;
 
           setLane(newStatus);
           setProjects((prev) =>
             prev.map((p) =>
-              p.id === source?.id ? { ...p, status: newStatus } : p,
+              p.id === sourceId ? { ...p, status: newStatus } : p,
             ),
           );
-          updateProjectStatus(source?.id, newStatus);
+          updateProjectStatus(sourceId, newStatus);
         }}
       >
         <main className="flex-1 p-4">

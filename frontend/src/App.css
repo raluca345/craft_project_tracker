@@ -8,6 +8,7 @@
 
 .status-carousel .swiper-wrapper {
   align-items: stretch;
+  flex-wrap: nowrap;
 }
 
 .status-carousel.status-carousel--locked .swiper-button-prev,

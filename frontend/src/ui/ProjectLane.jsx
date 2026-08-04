@@ -2,6 +2,7 @@ import { Children, cloneElement, useCallback, useState } from "react";
 import { useDroppable } from "@dnd-kit/react";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import ProjectCardSlot from "./ProjectCardSlot.jsx";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -53,8 +54,10 @@ export default function ProjectLane({ id, title, children, onEdit }) {
         }`}
       >
         {cards.map((card, index) => (
-          <SwiperSlide key={card.key ?? index} className="w-auto!">
-            {card}
+          <SwiperSlide key={card.key ?? index} className="w-auto! shrink-0!">
+            <ProjectCardSlot status={id} index={index}>
+              {card}
+            </ProjectCardSlot>
           </SwiperSlide>
         ))}
         <SwiperSlide className="w-auto!">

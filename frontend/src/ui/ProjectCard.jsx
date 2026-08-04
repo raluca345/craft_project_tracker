@@ -31,7 +31,6 @@ export default function ProjectCard({ project, onEdit }) {
   const { ref } = useDraggable({
     id: project.id,
   });
-
   const [showAllTags, setShowAllTags] = useState(false);
 
   const visibleTags = showAllTags
