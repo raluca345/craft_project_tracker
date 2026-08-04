@@ -70,6 +70,6 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable UUID id) {
         User user = userService.getFirst();
         projectService.delete(user, id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

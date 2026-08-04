@@ -13,6 +13,7 @@ import org.craft.backend.model.Tag;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +113,7 @@ public class ProjectService {
         return ProjectResponse.toResponse(projectRepository.save(project));
     }
 
+    @Transactional
     public void delete(User user, UUID id) {
         projectRepository.deleteByUserAndId(user, id);
     }
