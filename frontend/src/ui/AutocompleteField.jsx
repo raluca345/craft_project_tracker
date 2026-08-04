@@ -1,5 +1,5 @@
 import FormField from "./FormField";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function AutocompleteField({
   label,
@@ -9,10 +9,12 @@ export default function AutocompleteField({
   error,
 }) {
   const [query, setQuery] = useState(value ?? "");
+  const [prevValue, setPrevValue] = useState(value);
 
-  useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value);
     setQuery(value ?? "");
-  }, [value]);
+  }
 
   const filtered = suggestions.filter((s) =>
     s.toLowerCase().includes(query.toLowerCase()),

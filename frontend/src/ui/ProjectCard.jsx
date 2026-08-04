@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import { useDraggable } from "@dnd-kit/react";
 import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
@@ -27,7 +27,12 @@ function cardRotation(id) {
   return (hash % 5) - 2 + "deg";
 }
 
-export default function ProjectCard({ project, onEdit, onEditNotes }) {
+export default function ProjectCard({
+  project,
+  onEdit,
+  onEditNotes,
+  onDelete,
+}) {
   const { ref } = useDraggable({
     id: project.id,
   });
@@ -55,7 +60,7 @@ export default function ProjectCard({ project, onEdit, onEditNotes }) {
             <div className="action-buttons absolute top-4 right-3 z-20 flex flex-row gap-1.5 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button
                 type="button"
-                onClick={() => onEditNotes?.(project)}
+                onClick={() => onEditNotes(project)}
                 className="flex items-center justify-center w-7 h-7 rounded-full bg-white/70 backdrop-blur-xs transition-colors hover:bg-white hover:text-amber-600"
                 aria-label="Open notes"
               >
@@ -71,6 +76,7 @@ export default function ProjectCard({ project, onEdit, onEditNotes }) {
               </button>
               <button
                 type="button"
+                onClick={() => onDelete(project)}
                 className="flex items-center justify-center w-7 h-7 rounded-full bg-white/70 backdrop-blur-xs transition-colors hover:bg-white hover:text-red-600"
                 aria-label="Delete project"
               >

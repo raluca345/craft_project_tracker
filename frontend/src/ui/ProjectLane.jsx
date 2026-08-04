@@ -19,13 +19,15 @@ export default function ProjectLane({
   children,
   onEdit,
   onEditNotes,
+  onDelete,
+  onAddNew,
 }) {
   const { ref } = useDroppable({
     id,
   });
   const [canNavigate, setCanNavigate] = useState(false);
   const cards = Children.map(children, (card) =>
-    cloneElement(card, { onEdit, onEditNotes }),
+    cloneElement(card, { onEdit, onEditNotes, onDelete }),
   );
   const updateCanNavigate = useCallback((swiper) => {
     if (!swiper || swiper.destroyed) return;
@@ -69,8 +71,7 @@ export default function ProjectLane({
         <SwiperSlide className="w-auto!">
           <button
             type="button"
-            command="show-modal"
-            commandfor="dialog-ex"
+            onClick={onAddNew}
             className="flex h-70 w-50 mt-8 mb-2 mx-6 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-5 border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400 [font:inherit]"
           >
             <svg

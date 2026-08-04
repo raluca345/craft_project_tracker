@@ -6,10 +6,7 @@ export default function TagInput({ value, onChange }) {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
-    if (!query) {
-      setSuggestions([]);
-      return;
-    }
+    if (!query) return;
     const timeout = setTimeout(() => {
       autocomplete(query).then((tags) => {
         // hide tags already added as chips
@@ -18,6 +15,10 @@ export default function TagInput({ value, onChange }) {
     }, 250);
     return () => clearTimeout(timeout);
   }, [query, value]);
+
+  if (!query && suggestions.length > 0) {
+    setSuggestions([]);
+  }
 
   function addTag(name) {
     const trimmed = name.trim();

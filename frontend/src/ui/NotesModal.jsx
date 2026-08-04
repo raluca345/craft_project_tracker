@@ -6,15 +6,19 @@ const TEXTAREA_STYLE =
 export default function NotesModal({ project, onCancel, onSave }) {
   const dialogRef = useRef(null);
   const [notes, setNotes] = useState("");
+  const [prevProject, setPrevProject] = useState(project);
+
+  if (project !== prevProject) {
+    setPrevProject(project);
+    setNotes(project?.notes ?? "");
+  }
 
   useEffect(() => {
     if (project) {
-      setNotes(project.notes ?? "");
       if (!dialogRef.current?.open) {
         dialogRef.current?.showModal();
       }
-    } else {
-      setNotes("");
+    } else if (dialogRef.current?.open) {
       dialogRef.current?.close();
     }
   }, [project]);
@@ -23,9 +27,13 @@ export default function NotesModal({ project, onCancel, onSave }) {
     event.preventDefault();
     if (!project) return;
 
-    Promise.resolve(onSave(project.id, notes)).then(() => {
-      dialogRef.current?.close();
-    });
+    Promise.resolve(onSave(project.id, notes))
+      .then(() => {
+        dialogRef.current?.close();
+      })
+      .catch(() => {
+        // Keep the dialog open so the user can retry.
+      });
   }
 
   return (
