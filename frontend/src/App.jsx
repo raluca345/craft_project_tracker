@@ -8,10 +8,12 @@ import { getStatuses, formatStatus } from "./api/apiStatuses";
 import {
   getProjects,
   updateProjectStatus,
+  updateProjectNotes,
   createProject,
   editProject,
 } from "./api/apiProjects";
 import Footer from "./ui/Footer";
+import NotesModal from "./ui/NotesModal";
 
 function parseProjectSlotId(id) {
   if (typeof id !== "string" || !id.startsWith("project-slot:")) {
@@ -76,6 +78,7 @@ function App() {
   const [statuses, setStatuses] = useState([]);
   const [projects, setProjects] = useState([]);
   const [editingProject, setEditingProject] = useState(null);
+  const [editingNotesProject, setEditingNotesProject] = useState(null);
 
   useEffect(() => {
     getStatuses().then(setStatuses);
@@ -88,6 +91,10 @@ function App() {
 
   function handleEditProject(project) {
     setEditingProject(project);
+  }
+
+  function handleEditNotes(project) {
+    setEditingNotesProject(project);
   }
 
   async function handleSaveProject(project) {
@@ -105,6 +112,18 @@ function App() {
 
   function handleCloseModal() {
     setEditingProject(null);
+  }
+
+  function handleCloseNotesModal() {
+    setEditingNotesProject(null);
+  }
+
+  async function handleSaveNotes(projectId, notes) {
+    const updated = await updateProjectNotes(projectId, notes);
+    setProjects((prev) =>
+      prev.map((project) => (project.id === updated.id ? updated : project)),
+    );
+    setEditingNotesProject(null);
   }
 
   return (
@@ -151,6 +170,11 @@ function App() {
         }}
       >
         <main className="flex-1 p-4">
+          <NotesModal
+            project={editingNotesProject}
+            onCancel={handleCloseNotesModal}
+            onSave={handleSaveNotes}
+          />
           <h1 className="flex p-4 m-2 text-2xl font-bold text-(--accent-color2)">
             Craft Project Tracker
           </h1>
@@ -166,6 +190,7 @@ function App() {
                   id={status}
                   title={formatStatus(status)}
                   onEdit={handleEditProject}
+                  onEditNotes={handleEditNotes}
                 >
                   {projectsByStatus[status]?.map((project) => (
                     <ProjectCard key={project.id} project={project} />

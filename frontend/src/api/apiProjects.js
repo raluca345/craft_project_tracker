@@ -31,3 +31,20 @@ export async function updateProjectStatus(id, status) {
   });
   return handleResponse(res);
 }
+
+export async function updateProjectNotes(id, notes) {
+  const res = await fetch(`${API_BASE}/${id}/notes`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ notes: notes || null }),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteProject(id) {
+  const res = await fetch(`${API_BASE}/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+  return handleResponse(res);
+}

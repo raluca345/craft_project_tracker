@@ -13,13 +13,19 @@ const HEADING_COLORS = {
   FINISHED: "text-sky-700",
 };
 
-export default function ProjectLane({ id, title, children, onEdit }) {
+export default function ProjectLane({
+  id,
+  title,
+  children,
+  onEdit,
+  onEditNotes,
+}) {
   const { ref } = useDroppable({
     id,
   });
   const [canNavigate, setCanNavigate] = useState(false);
   const cards = Children.map(children, (card) =>
-    cloneElement(card, { onEdit }),
+    cloneElement(card, { onEdit, onEditNotes }),
   );
   const updateCanNavigate = useCallback((swiper) => {
     if (!swiper || swiper.destroyed) return;
