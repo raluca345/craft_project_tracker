@@ -1,6 +1,14 @@
 export const API_BASE = "http://localhost:8080/api/v1/me/projects";
 export const API_ROOT = "http://localhost:8080/api/v1";
 
+export class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 export async function handleResponse(res) {
   if (!res.ok) {
     let message;
@@ -10,7 +18,8 @@ export async function handleResponse(res) {
     } catch {
       message = res.statusText;
     }
-    throw new Error(message);
+    throw new ApiError(message, res.status);
   }
-  return res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
