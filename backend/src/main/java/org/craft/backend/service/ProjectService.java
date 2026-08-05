@@ -12,6 +12,8 @@ import org.craft.backend.model.Project;
 import org.craft.backend.model.Tag;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.ProjectRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +24,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
+    private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
     private final ProjectRepository projectRepository;
     private final TagService tagService;
+    private final R2Service r2Service;
 
     public List<ProjectResponse> getProjects(User user) {
         return ProjectResponse.toResponses(projectRepository.findByUser(user));
@@ -68,7 +72,7 @@ public class ProjectService {
                 .yarnUsed(request.getYarnUsed())
                 .status(Status.TO_DO)
                 .notes(request.getNotes())
-                .imageUrl(request.getImageUrl())
+                .imageKey(request.getImageKey())
                 .tags(tags)
                 .build();
 
@@ -105,7 +109,7 @@ public class ProjectService {
         project.setYarnWeightCategory(request.getYarnWeightCategory());
         project.setYarnUsed(request.getYarnUsed());
         project.setAmountUsed(request.getAmountUsed());
-        project.setImageUrl(request.getImageUrl());
+        project.setImageKey(request.getImageKey());
         project.setStatus(request.getStatus());
         project.setNotes(request.getNotes());
         project.setTags(tags);
@@ -115,7 +119,18 @@ public class ProjectService {
 
     @Transactional
     public void delete(User user, UUID id) {
-        projectRepository.deleteByUserAndId(user, id);
+        Project project = projectRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new ProjectNotFoundException("Project with id " + id + " not found"));
+
+        if (project.getImageKey() != null) {
+            try {
+                r2Service.deleteObject(project.getImageKey());
+            } catch (Exception e) {
+                log.warn("Failed to delete image {} for project {}", project.getImageKey(), id, e);
+            }
+        }
+
+        projectRepository.delete(project);
     }
 
     private List<Tag> getTagsByName(List<String> tagNames) {

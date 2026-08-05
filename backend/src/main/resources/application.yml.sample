@@ -1,0 +1,7 @@
+cloudflare:
+  r2:
+    account-id: your-r2-account-id
+    access-key: your-r2-access-key
+    secret-key: your-r2-secret-key
+    bucket: your-bucket-name
+    public-domain: https://your-custom-domain.example.com

@@ -32,7 +32,7 @@ public class CreateProjectRequest {
     private String yarnUsed;
 
     @Size(max = 2048)
-    private String imageUrl;
+    private String imageKey;
 
     private String notes;
 

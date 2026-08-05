@@ -51,7 +51,7 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    private String imageUrl;
+    private String imageKey;
 
     @ManyToMany
     @JoinTable(

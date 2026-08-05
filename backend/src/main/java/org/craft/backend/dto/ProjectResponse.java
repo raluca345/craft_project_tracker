@@ -19,7 +19,7 @@ public class ProjectResponse {
     private String yarnWeightCategory;
     private String yarnUsed;
     private int amountUsed;
-    private String imageUrl;
+    private String imageKey;
     private String notes;
     private Status status;
     private List<String> tags = new ArrayList<>();
@@ -34,7 +34,7 @@ public class ProjectResponse {
         response.setYarnWeightCategory(project.getYarnWeightCategory());
         response.setYarnUsed(project.getYarnUsed());
         response.setAmountUsed(project.getAmountUsed());
-        response.setImageUrl(project.getImageUrl());
+        response.setImageKey(project.getImageKey());
         response.setNotes(project.getNotes());
         response.setStatus(project.getStatus());
         response.setTags(project.getTags().stream().map(Tag::getName).toList());

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/react";
 import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
+import { API_ROOT } from "../api/apiCore";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 import TapeCorner from "./TapeCorner.jsx";
-
-//TODO: shared modal (text-URL images) → wire up action buttons → real R2 upload last
 
 const MAX_VISIBLE_TAGS = 2;
 
@@ -84,9 +83,9 @@ export default function ProjectCard({
               </button>
             </div>
             <div className="h-full w-full flex items-center justify-center text-s text-slate-600">
-              {project.imageUrl ? (
+              {project.imageKey ? (
                 <img
-                  src={project.imageUrl}
+                  src={`${API_ROOT}/images/${project.imageKey}`}
                   alt=""
                   className="h-full w-full object-cover"
                 />

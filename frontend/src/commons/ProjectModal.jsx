@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import FormField from "../ui/FormField";
 import AutocompleteField from "../ui/AutocompleteField";
 import TagInput from "../ui/TagInput";
+import ImageUploadField from "../ui/ImageUploadField";
 import { formatStatus } from "../api/apiStatuses";
+import { uploadImage } from "../api/apiImages";
+import { API_ROOT } from "../api/apiCore";
+import { getErrorMessage } from "./errors";
 import {
   INITIAL_FORM_STATE,
   INITIAL_ERRORS,
@@ -57,6 +61,14 @@ export default function ProjectModal({
   function updateField(field, value) {
     setFormState((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: null }));
+  }
+
+  function handleFileSelected(file) {
+    uploadImage(file)
+      .then(({ key }) => updateField("imageKey", key))
+      .catch((e) =>
+        setErrors((prev) => ({ ...prev, imageKey: getErrorMessage(e) })),
+      );
   }
 
   function handleSubmit(e) {
@@ -180,14 +192,15 @@ export default function ProjectModal({
             </FormField>
           </>
         )}
-        <FormField label="Image URL" error={errors.imageUrl}>
-          <input
-            type="url"
-            id="image-url"
-            placeholder="https://..."
-            className={errors.imageUrl ? INPUT_ERROR_STYLE : INPUT_STYLE}
-            value={formState.imageUrl}
-            onChange={(e) => updateField("imageUrl", e.target.value)}
+        <FormField label="Image" error={errors.imageKey}>
+          <ImageUploadField
+            key={existingProject?.id ?? "new"}
+            existingImageUrl={
+              existingProject?.imageKey
+                ? `${API_ROOT}/images/${existingProject.imageKey}`
+                : null
+            }
+            onFileSelected={handleFileSelected}
           />
         </FormField>
         <FormField label="Notes" error={errors.notes}>

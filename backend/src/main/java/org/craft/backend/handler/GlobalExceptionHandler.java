@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -36,6 +38,16 @@ public class GlobalExceptionHandler {
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         return buildResponse(HttpStatus.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleMaxUploadSize(MaxUploadSizeExceededException ex) {
+        return buildResponse(HttpStatus.CONTENT_TOO_LARGE, "File is too large. Maximum upload size is 10MB.");
+    }
+
+    @ExceptionHandler(NoSuchKeyException.class)
+    public ResponseEntity<Map<String, Object>> handleNoSuchKey(NoSuchKeyException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, "Image not found");
     }
 
     @ExceptionHandler(Exception.class)

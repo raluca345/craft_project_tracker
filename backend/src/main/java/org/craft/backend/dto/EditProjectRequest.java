@@ -41,7 +41,7 @@ public class EditProjectRequest {
     private Status status;
 
     @Size(max = 2048)
-    private String imageUrl;
+    private String imageKey;
 
     private String notes;
 

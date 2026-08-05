@@ -13,6 +13,8 @@ export function getErrorMessage(error) {
         return "The item you're looking for was not found. It may have been deleted.";
       case 409:
         return "This item was already changed. Please refresh and try again.";
+      case 413:
+        return "That file is too large. Please choose a smaller image.";
       case 500:
         return "Something went wrong. Please try again.";
       default:

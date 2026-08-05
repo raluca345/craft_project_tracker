@@ -7,7 +7,7 @@ export const INITIAL_FORM_STATE = {
   yarnUsed: "",
   amountUsed: 0,
   status: "TO_DO",
-  imageUrl: "",
+  imageKey: "",
   notes: "",
   tags: [],
 };
@@ -21,7 +21,7 @@ export const INITIAL_ERRORS = {
   yarnUsed: null,
   amountUsed: null,
   status: null,
-  imageUrl: null,
+  imageKey: null,
   notes: null,
   tags: null,
 };
@@ -69,8 +69,8 @@ export function validate(formState) {
     errors.status = "Status is required";
   }
 
-  if (formState.imageUrl.length > 2048) {
-    errors.imageUrl = "Image URL must be 2048 characters or fewer";
+  if (formState.imageKey.length > 2048) {
+    errors.imageKey = "Image key must be 2048 characters or fewer";
   }
 
   if (formState.tags.some((t) => t.length > 50)) {
@@ -94,7 +94,7 @@ export function projectToForm(project) {
     yarnUsed: project.yarnUsed ?? "",
     amountUsed: project.amountUsed ?? 0,
     status: project.status ?? "TO_DO",
-    imageUrl: project.imageUrl ?? "",
+    imageKey: project.imageKey ?? "",
     notes: project.notes ?? "",
     tags: project.tags ?? [],
   };
@@ -108,7 +108,7 @@ export function formToPayload(formState, existingProject) {
     toolSize: formState.toolSize,
     yarnWeightCategory: formState.yarnWeightCategory || null,
     yarnUsed: formState.yarnUsed || null,
-    imageUrl: formState.imageUrl || null,
+    imageKey: formState.imageKey || null,
     notes: formState.notes || null,
     tags: formState.tags,
   };

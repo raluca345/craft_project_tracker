@@ -41,6 +41,8 @@ docker-compose.yml
 
 ### Spring ###
 **/application.properties
+**/application.yml
+!**/application.yml.sample
 
 ### Node / frontend ###
 **/node_modules/
