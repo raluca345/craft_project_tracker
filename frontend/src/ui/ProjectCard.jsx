@@ -31,9 +31,11 @@ export default function ProjectCard({
   onEdit,
   onEditNotes,
   onDelete,
+  draggable = true,
 }) {
   const { ref } = useDraggable({
     id: project.id,
+    disabled: !draggable,
   });
   const [showAllTags, setShowAllTags] = useState(false);
 

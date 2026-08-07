@@ -1,5 +1,6 @@
 import { Children, cloneElement, useCallback, useState } from "react";
 import { useDroppable } from "@dnd-kit/react";
+import { HiPlus } from "react-icons/hi2";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProjectCardSlot from "./ProjectCardSlot.jsx";
@@ -74,19 +75,7 @@ export default function ProjectLane({
             onClick={onAddNew}
             className="flex h-70 w-50 mt-8 mb-2 mx-6 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-5 border-dashed border-slate-300 bg-slate-50 text-sm text-slate-400 [font:inherit]"
           >
-            <svg
-              className="w-6 h-6 text-slate-300"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 8v4m0 0v4m0-4h4m-4 0H8"
-              />
-            </svg>
+            <HiPlus className="w-6 h-6 text-slate-300" />
             Add new
           </button>
         </SwiperSlide>

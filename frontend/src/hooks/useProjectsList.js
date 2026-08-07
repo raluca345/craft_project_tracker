@@ -8,51 +8,21 @@ import {
   deleteProject,
 } from "../api/apiProjects";
 import { reorderProject, moveProjectToStatus } from "../utils/projectOrdering";
-import { getErrorMessage } from "../commons/errors";
 
-export function useProjects() {
+export function useProjectsList({
+  showError,
+  setEditingProject,
+  setEditingNotes,
+  setIsNewProjectOpen,
+  setProjectToDelete,
+}) {
   const [projects, setProjects] = useState([]);
-  const [editingProject, setEditingProject] = useState(null);
-  const [editingNotes, setEditingNotes] = useState(null);
-  const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     getProjects()
       .then(setProjects)
-      .catch((err) => setError(getErrorMessage(err)));
-  }, []);
-
-  const showError = useCallback((err) => {
-    console.error(err);
-    setError(getErrorMessage(err));
-  }, []);
-
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
-
-  const handleEditProject = useCallback((project) => {
-    setEditingProject(project);
-  }, []);
-
-  const handleEditNotes = useCallback((project) => {
-    setEditingNotes(project);
-  }, []);
-
-  const handleAddNew = useCallback(() => {
-    setIsNewProjectOpen(true);
-  }, []);
-
-  const handleCloseModal = useCallback(() => {
-    setEditingProject(null);
-    setIsNewProjectOpen(false);
-  }, []);
-
-  const handleCloseNotesModal = useCallback(() => {
-    setEditingNotes(null);
-  }, []);
+      .catch((err) => showError(err));
+  }, [showError]);
 
   const handleSaveProject = useCallback(
     async (project) => {
@@ -73,7 +43,7 @@ export function useProjects() {
         throw err;
       }
     },
-    [showError],
+    [showError, setEditingProject, setIsNewProjectOpen],
   );
 
   const handleSaveNotes = useCallback(
@@ -91,16 +61,8 @@ export function useProjects() {
         throw err;
       }
     },
-    [showError],
+    [showError, setEditingNotes],
   );
-
-  const handleDeleteProject = useCallback((project) => {
-    setProjectToDelete(project);
-  }, []);
-
-  const handleCancelDelete = useCallback(() => {
-    setProjectToDelete(null);
-  }, []);
 
   const handleConfirmDelete = useCallback(
     async (project) => {
@@ -113,7 +75,7 @@ export function useProjects() {
         throw err;
       }
     },
-    [showError],
+    [showError, setProjectToDelete],
   );
 
   const handleMoveProject = useCallback(
@@ -144,22 +106,9 @@ export function useProjects() {
 
   return {
     projects,
-    editingProject,
-    editingNotes,
-    isNewProjectOpen,
-    projectToDelete,
-    error,
-    handleEditProject,
-    handleEditNotes,
-    handleAddNew,
-    handleCloseModal,
-    handleCloseNotesModal,
     handleSaveProject,
     handleSaveNotes,
-    handleDeleteProject,
-    handleCancelDelete,
     handleConfirmDelete,
     handleMoveProject,
-    clearError,
   };
 }

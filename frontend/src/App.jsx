@@ -9,9 +9,11 @@ import Footer from "./ui/Footer";
 import NotesModal from "./ui/NotesModal";
 import ConfirmDialog from "./ui/ConfirmDialog";
 import ErrorBox from "./ui/ErrorBox";
-import { useProjects } from "./hooks/useProjects";
+import SearchBar from "./ui/SearchBar";
+import { useProjectError } from "./hooks/useProjectError";
+import { useProjectModals } from "./hooks/useProjectModals";
+import { useProjectsList } from "./hooks/useProjectsList";
 import { parseProjectSlotId } from "./utils/projectOrdering";
-import { FaMagnifyingGlass } from "react-icons/fa6";
 
 //TODO: search bar and the grid view for the results
 // the grid component
@@ -21,26 +23,39 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 
 function App() {
   const [statuses, setStatuses] = useState([]);
+  const { error, showError, clearError } = useProjectError();
+
   const {
-    projects,
     editingProject,
     editingNotes,
     isNewProjectOpen,
     projectToDelete,
-    error,
     handleEditProject,
     handleEditNotes,
     handleAddNew,
     handleCloseModal,
     handleCloseNotesModal,
-    handleSaveProject,
-    handleSaveNotes,
     handleDeleteProject,
     handleCancelDelete,
+    setEditingProject,
+    setEditingNotes,
+    setIsNewProjectOpen,
+    setProjectToDelete,
+  } = useProjectModals();
+
+  const {
+    projects,
+    handleSaveProject,
+    handleSaveNotes,
     handleConfirmDelete,
     handleMoveProject,
-    clearError,
-  } = useProjects();
+  } = useProjectsList({
+    showError,
+    setEditingProject,
+    setEditingNotes,
+    setIsNewProjectOpen,
+    setProjectToDelete,
+  });
 
   useEffect(() => {
     getStatuses().then(setStatuses);
@@ -92,17 +107,7 @@ function App() {
             <h1 className="p-4 m-2 text-2xl font-bold text-(--accent-color2)">
               Craft Project Tracker
             </h1>
-            <span className="flex justify-end">
-              <span className="relative">
-                <FaMagnifyingGlass className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                <input
-                  type="search"
-                  id="search"
-                  placeholder="Search"
-                  className="border border-slate-200 rounded-xl pl-8 pr-2.5 mr-5 py-1 focus:border-fuchsia-400 focus:outline-none"
-                />
-              </span>
-            </span>
+            <SearchBar />
           </div>
           <Board
             onSave={handleSaveProject}
