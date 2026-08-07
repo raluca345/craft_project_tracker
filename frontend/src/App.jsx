@@ -11,6 +11,13 @@ import ConfirmDialog from "./ui/ConfirmDialog";
 import ErrorBox from "./ui/ErrorBox";
 import { useProjects } from "./hooks/useProjects";
 import { parseProjectSlotId } from "./utils/projectOrdering";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+
+//TODO: search bar and the grid view for the results
+// the grid component
+// pagination controls
+// the tags should be blue and clickable. on click in searches only by that tag
+// real auth. maybe a stylized login and sign up page?
 
 function App() {
   const [statuses, setStatuses] = useState([]);
@@ -81,9 +88,22 @@ function App() {
             onCancel={handleCancelDelete}
             onConfirm={handleConfirmDelete}
           />
-          <h1 className="flex p-4 m-2 text-2xl font-bold text-(--accent-color2)">
-            Craft Project Tracker
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="p-4 m-2 text-2xl font-bold text-(--accent-color2)">
+              Craft Project Tracker
+            </h1>
+            <span className="flex justify-end">
+              <span className="relative">
+                <FaMagnifyingGlass className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="search"
+                  id="search"
+                  placeholder="Search"
+                  className="border border-slate-200 rounded-xl pl-8 pr-2.5 mr-5 py-1 focus:border-fuchsia-400 focus:outline-none"
+                />
+              </span>
+            </span>
+          </div>
           <Board
             onSave={handleSaveProject}
             existingProject={editingProject}
