@@ -17,11 +17,18 @@ export function useProjectsList({
   setProjectToDelete,
 }) {
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getProjects()
-      .then(setProjects)
-      .catch((err) => showError(err));
+      .then((data) => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        showError(err);
+        setLoading(false);
+      });
   }, [showError]);
 
   const handleSaveProject = useCallback(
@@ -106,6 +113,7 @@ export function useProjectsList({
 
   return {
     projects,
+    loading,
     handleSaveProject,
     handleSaveNotes,
     handleConfirmDelete,

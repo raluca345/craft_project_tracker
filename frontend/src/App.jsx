@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Board from "./ui/Board";
-import ProjectCard from "./ui/ProjectCard";
-import ProjectLane from "./ui/ProjectLane";
+import SwimlaneBoard from "./ui/SwimlaneBoard";
+import GridBoard from "./ui/GridBoard";
 import { DragDropProvider } from "@dnd-kit/react";
-import { getStatuses, formatStatus } from "./api/apiStatuses";
+import { getStatuses } from "./api/apiStatuses";
 import Footer from "./ui/Footer";
 import NotesModal from "./ui/NotesModal";
 import ConfirmDialog from "./ui/ConfirmDialog";
 import ErrorBox from "./ui/ErrorBox";
 import SearchBar from "./ui/SearchBar";
+import Pagination from "./ui/Pagination";
 import { useProjectError } from "./hooks/useProjectError";
 import { useProjectModals } from "./hooks/useProjectModals";
 import { useProjectsList } from "./hooks/useProjectsList";
 import { parseProjectSlotId } from "./utils/projectOrdering";
 import { filterProjects } from "./utils/searchProjects";
 
-//TODO: search bar and the grid view for the results
-// the grid component
-// pagination controls
-// the tags should be blue and clickable. on click in searches only by that tag
+//TODO: the tags should be blue and clickable. on click in searches only by that tag
 // real auth. maybe a stylized login and sign up page?
+
+const PAGE_SIZE = 12;
 
 function App() {
   const [statuses, setStatuses] = useState([]);
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const { error, showError, clearError } = useProjectError();
 
   const {
@@ -47,6 +47,7 @@ function App() {
 
   const {
     projects,
+    loading,
     handleSaveProject,
     handleSaveNotes,
     handleConfirmDelete,
@@ -64,9 +65,14 @@ function App() {
   }, []);
 
   const filteredProjects = filterProjects(projects, query);
-
-  const projectsByStatus = Object.fromEntries(
-    statuses.map((s) => [s, filteredProjects.filter((p) => p.status === s)]),
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProjects.length / PAGE_SIZE),
+  );
+  const currentPage = Math.min(page, totalPages);
+  const pageProjects = filteredProjects.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
   );
 
   function handleDragEnd(event) {
@@ -111,38 +117,49 @@ function App() {
             <h1 className="p-4 m-2 text-2xl font-bold text-(--accent-color2)">
               Craft Project Tracker
             </h1>
-            <SearchBar onSearch={setQuery} />
+            <SearchBar
+              onSearch={(q) => {
+                setQuery(q);
+                setPage(1);
+              }}
+            />
           </div>
-          <Board
-            onSave={handleSaveProject}
-            existingProject={editingProject}
-            onClose={handleCloseModal}
-            isNewProjectOpen={isNewProjectOpen}
-          >
-            {statuses.length > 0 ? (
-              filteredProjects.length > 0 ? (
-                statuses.map((status) => (
-                  <ProjectLane
-                    key={status}
-                    id={status}
-                    title={formatStatus(status)}
-                    onEdit={handleEditProject}
-                    onEditNotes={handleEditNotes}
-                    onDelete={handleDeleteProject}
-                    onAddNew={handleAddNew}
-                  >
-                    {projectsByStatus[status]?.map((project) => (
-                      <ProjectCard key={project.id} project={project} />
-                    ))}
-                  </ProjectLane>
-                ))
-              ) : (
-                <p className="text-slate-400 text-sm p-4">No projects found</p>
-              )
+          {query.trim() ? (
+            loading ? (
+              <p className="text-slate-400 text-sm p-4">Loading projects…</p>
             ) : (
-              <p className="text-slate-400 text-sm p-4">Loading lanes…</p>
-            )}
-          </Board>
+              <>
+                <GridBoard
+                  projects={pageProjects}
+                  onSave={handleSaveProject}
+                  existingProject={editingProject}
+                  onClose={handleCloseModal}
+                  isNewProjectOpen={isNewProjectOpen}
+                  onEditProject={handleEditProject}
+                  onEditNotes={handleEditNotes}
+                  onDelete={handleDeleteProject}
+                />
+                <Pagination
+                  page={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
+              </>
+            )
+          ) : (
+            <SwimlaneBoard
+              statuses={statuses}
+              projects={filteredProjects}
+              onSave={handleSaveProject}
+              existingProject={editingProject}
+              onClose={handleCloseModal}
+              isNewProjectOpen={isNewProjectOpen}
+              onEditProject={handleEditProject}
+              onEditNotes={handleEditNotes}
+              onDelete={handleDeleteProject}
+              onAddNew={handleAddNew}
+            />
+          )}
         </main>
       </DragDropProvider>
       <Footer />
