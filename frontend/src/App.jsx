@@ -16,13 +16,14 @@ import { useProjectsList } from "./hooks/useProjectsList";
 import { parseProjectSlotId } from "./utils/projectOrdering";
 import { filterProjects } from "./utils/searchProjects";
 
-//TODO: the tags should be blue and clickable. on click in searches only by that tag
-// real auth. maybe a stylized login and sign up page?
+//TODO: the tag chips clickable. on click it searches only by that tag
+// real auth. maybe a stylized login and sign up page? a landing page for sure though
 
 const PAGE_SIZE = 12;
 
 function App() {
   const [statuses, setStatuses] = useState([]);
+  const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const { error, showError, clearError } = useProjectError();
@@ -65,6 +66,13 @@ function App() {
   }, []);
 
   const filteredProjects = filterProjects(projects, query);
+
+  function handleTagClick(tag) {
+    const nextQuery = `#${tag}`;
+    setDraft(nextQuery);
+    setQuery(nextQuery);
+    setPage(1);
+  }
   const totalPages = Math.max(
     1,
     Math.ceil(filteredProjects.length / PAGE_SIZE),
@@ -118,6 +126,8 @@ function App() {
               Craft Project Tracker
             </h1>
             <SearchBar
+              value={draft}
+              onChange={setDraft}
               onSearch={(q) => {
                 setQuery(q);
                 setPage(1);
@@ -138,6 +148,7 @@ function App() {
                   onEditProject={handleEditProject}
                   onEditNotes={handleEditNotes}
                   onDelete={handleDeleteProject}
+                  onTagClick={handleTagClick}
                 />
                 <Pagination
                   page={currentPage}
@@ -157,6 +168,7 @@ function App() {
               onEditProject={handleEditProject}
               onEditNotes={handleEditNotes}
               onDelete={handleDeleteProject}
+              onTagClick={handleTagClick}
               onAddNew={handleAddNew}
             />
           )}

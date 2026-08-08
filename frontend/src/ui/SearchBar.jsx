@@ -1,12 +1,9 @@
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { useState } from "react";
 
-export default function SearchBar({ onSearch }) {
-  const [query, setQuery] = useState("");
-
+export default function SearchBar({ value, onChange, onSearch }) {
   function handleSubmit(e) {
     e.preventDefault();
-    onSearch(query);
+    onSearch(value);
   }
 
   return (
@@ -18,8 +15,9 @@ export default function SearchBar({ onSearch }) {
             type="search"
             id="search"
             placeholder="Search"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
             className="border border-slate-200 rounded-xl pl-8 pr-2.5 mr-5 py-1 focus:border-fuchsia-400 focus:outline-none"
-            onChange={(e) => setQuery(e.target.value)}
           />
         </form>
       </span>

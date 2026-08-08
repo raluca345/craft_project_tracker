@@ -13,6 +13,7 @@ export default function SwimlaneBoard({
   onEditProject,
   onEditNotes,
   onDelete,
+  onTagClick,
   onAddNew,
 }) {
   const projectsByStatus = Object.fromEntries(
@@ -37,6 +38,7 @@ export default function SwimlaneBoard({
               onEdit={onEditProject}
               onEditNotes={onEditNotes}
               onDelete={onDelete}
+              onTagClick={onTagClick}
               onAddNew={onAddNew}
             >
               {projectsByStatus[status]?.map((project) => (

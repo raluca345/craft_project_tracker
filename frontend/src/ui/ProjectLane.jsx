@@ -21,6 +21,7 @@ export default function ProjectLane({
   onEdit,
   onEditNotes,
   onDelete,
+  onTagClick,
   onAddNew,
 }) {
   const { ref } = useDroppable({
@@ -28,7 +29,7 @@ export default function ProjectLane({
   });
   const [canNavigate, setCanNavigate] = useState(false);
   const cards = Children.map(children, (card) =>
-    cloneElement(card, { onEdit, onEditNotes, onDelete }),
+    cloneElement(card, { onEdit, onEditNotes, onDelete, onTagClick }),
   );
   const updateCanNavigate = useCallback((swiper) => {
     if (!swiper || swiper.destroyed) return;

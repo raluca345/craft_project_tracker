@@ -31,6 +31,7 @@ export default function ProjectCard({
   onEdit,
   onEditNotes,
   onDelete,
+  onTagClick,
   draggable = true,
 }) {
   const { ref } = useDraggable({
@@ -109,17 +110,20 @@ export default function ProjectCard({
               <div className="mt-2 flex flex-col items-start gap-1">
                 <div className="flex flex-wrap gap-2">
                   {visibleTags.map((tag) => (
-                    <span
+                    <button
                       key={tag}
+                      type="button"
                       title={tag}
-                      className={`inline-block rounded-md bg-amber-100 px-2 py-0.5 text-sm font-bold text-amber-700 shadow-sm ${
+                      aria-label={`Search projects tagged ${tag}`}
+                      onClick={() => onTagClick(tag)}
+                      className={`inline-block cursor-pointer rounded-md bg-amber-100 px-2 py-0.5 text-sm font-bold text-amber-700 shadow-sm transition-colors hover:bg-amber-200 ${
                         showAllTags
                           ? ""
                           : "max-w-17.5 overflow-hidden text-ellipsis whitespace-nowrap"
                       }`}
                     >
                       #{tag}
-                    </span>
+                    </button>
                   ))}
                   {!showAllTags && extraTagCount > 0 && (
                     <button

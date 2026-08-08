@@ -10,6 +10,7 @@ export default function GridBoard({
   onEditProject,
   onEditNotes,
   onDelete,
+  onTagClick,
 }) {
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
@@ -28,6 +29,7 @@ export default function GridBoard({
             onEdit={onEditProject}
             onEditNotes={onEditNotes}
             onDelete={onDelete}
+            onTagClick={onTagClick}
           />
         ))
       ) : (
