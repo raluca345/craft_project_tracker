@@ -5,6 +5,14 @@ export async function getProjects() {
   return handleResponse(res);
 }
 
+export async function search(query) {
+  const params = new URLSearchParams();
+  if (query) params.set("query", query);
+  const q = params.toString();
+  const res = await fetch(`${API_BASE}/search?${q}`);
+  return handleResponse(res);
+}
+
 export async function createProject(project) {
   const res = await fetch(API_BASE, {
     method: "POST",
