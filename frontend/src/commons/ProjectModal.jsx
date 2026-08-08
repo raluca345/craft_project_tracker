@@ -75,7 +75,10 @@ export default function ProjectModal({
     e.preventDefault();
     const nextErrors = validate(formState);
     setErrors(nextErrors);
-    if (hasErrors(nextErrors)) return;
+    if (hasErrors(nextErrors)) {
+      dialogRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
 
     const payload = formToPayload(formState, existingProject);
 
