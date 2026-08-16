@@ -4,27 +4,13 @@ import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import { API_ROOT } from "../api/apiCore";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 import TapeCorner from "./TapeCorner.jsx";
+import {
+  CARD_BORDER_COLORS,
+  CARD_PLACEHOLDER_CLASSES,
+  cardRotation,
+} from "./projectCardTheme.js";
 
 const MAX_VISIBLE_TAGS = 2;
-
-const BORDER_COLORS = {
-  TO_DO: "border-rose-300/50",
-  IN_PROGRESS: "border-orange-300/50",
-  ASSEMBLING: "border-teal-300/50",
-  FINISHED: "border-sky-300/50",
-};
-
-const PLACEHOLDER_CLASSES = {
-  TO_DO: "placeholder-texture-rose",
-  IN_PROGRESS: "placeholder-texture-orange",
-  ASSEMBLING: "placeholder-texture-teal",
-  FINISHED: "placeholder-texture-sky",
-};
-
-function cardRotation(id) {
-  const hash = parseInt(id.replace(/-/g, "").slice(0, 8), 16);
-  return (hash % 5) - 2 + "deg";
-}
 
 export default function ProjectCard({
   project,
@@ -54,10 +40,10 @@ export default function ProjectCard({
         <TapeCorner position="top-left" rotation={-30} />
         <TapeCorner position="top-right" rotation={40} />
         <div
-          className={`card group flex flex-1 flex-col overflow-hidden border-5 border-dashed ${BORDER_COLORS[project.status] ?? "border-slate-300/80"} bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]`}
+          className={`card group flex flex-1 flex-col overflow-hidden border-5 border-dashed ${CARD_BORDER_COLORS[project.status] ?? "border-slate-300/80"} bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]`}
         >
           <div
-            className={`relative min-h-0 flex-1 ${PLACEHOLDER_CLASSES[project.status]}`}
+            className={`relative min-h-0 flex-1 ${CARD_PLACEHOLDER_CLASSES[project.status]}`}
           >
             <div className="action-buttons absolute top-4 right-3 z-20 flex flex-row gap-1.5 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button
