@@ -37,9 +37,11 @@ export default function LoginPage() {
           className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
         >
           <div>
-            <h1 className="text-xl font-semibold text-slate-800">Welcome back</h1>
+            <h1 className="text-xl font-semibold text-slate-800">
+              Good to see you again
+            </h1>
             <p className="mt-1 text-sm text-slate-600">
-              Log in to get back to your projects.
+              Your board's waiting. Nothing's changed.
             </p>
           </div>
 
