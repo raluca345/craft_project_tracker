@@ -8,6 +8,7 @@ import org.craft.backend.dto.UserResponse;
 import org.craft.backend.exceptions.UserNotFoundException;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

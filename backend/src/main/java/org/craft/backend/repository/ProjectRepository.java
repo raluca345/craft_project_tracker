@@ -28,5 +28,4 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
             @Param("tagCount") long tagCount
     );
 
-    void deleteByUserAndId(User user, UUID id);
 }
