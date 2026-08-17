@@ -1,35 +1,34 @@
-import { Link } from "react-router-dom";
-import FormField from "../ui/FormField.jsx";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/apiAuth.js";
+import { getErrorMessage } from "../commons/errors.js";
+import FormField from "../ui/forms/FormField.jsx";
+import AppHeader from "../ui/layout/AppHeader.jsx";
 
 const INPUT_STYLE =
   "rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-fuchsia-400 focus:outline-none";
 
-// TODO: implement real login. Backend has no auth endpoints yet; the form below
-// is UI-only for now.
-export default function LoginPage() {
-  function handleSubmit(e) {
+export default function LoginPage({ isLoggedIn, user, onLogin }) {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
+    try {
+      const data = await login(email, password);
+      onLogin(data);
+      navigate("/home");
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
-      <header className="flex items-center justify-between px-6 py-4">
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-sm font-semibold text-(--accent-color2)"
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-base shadow-sm">
-            🧶
-          </span>
-          Craft Project Tracker
-        </Link>
-        <Link
-          to="/signup"
-          className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-amber-100 hover:text-slate-800"
-        >
-          Sign up
-        </Link>
-      </header>
+      <AppHeader isLoggedIn={isLoggedIn} user={user} hideAuth />
 
       <main className="flex flex-1 items-center justify-center px-6 py-10">
         <form
@@ -41,9 +40,15 @@ export default function LoginPage() {
               Good to see you again
             </h1>
             <p className="mt-1 text-sm text-slate-600">
-              Your board's waiting. Nothing's changed.
+              Your board&apos;s waiting. Nothing&apos;s changed.
             </p>
           </div>
+
+          {error && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </p>
+          )}
 
           <FormField label="Email">
             <input
@@ -51,6 +56,9 @@ export default function LoginPage() {
               id="login-email"
               autoComplete="email"
               className={INPUT_STYLE}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </FormField>
 
@@ -60,6 +68,9 @@ export default function LoginPage() {
               id="login-password"
               autoComplete="current-password"
               className={INPUT_STYLE}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </FormField>
 
@@ -69,6 +80,13 @@ export default function LoginPage() {
           >
             Log in
           </button>
+
+          <p className="text-center text-sm text-slate-500">
+            New here?{" "}
+            <Link to="/signup" className="font-medium text-fuchsia-500 hover:text-fuchsia-600">
+              Make an account
+            </Link>
+          </p>
         </form>
       </main>
     </div>
