@@ -1,7 +1,7 @@
-import { handleResponse, API_ROOT } from "./apiCore";
+import { handleResponse, API_ROOT, authHeaders } from "./apiCore";
 
 export async function getStatuses() {
-  const res = await fetch(`${API_ROOT}/me/statuses`);
+  const res = await fetch(`${API_ROOT}/me/statuses`, { headers: authHeaders() });
   return handleResponse(res);
 }
 

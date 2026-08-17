@@ -1,4 +1,4 @@
-import { API_ROOT, handleResponse } from "./apiCore";
+import { API_ROOT, handleResponse, authHeaders } from "./apiCore";
 
 export async function uploadImage(file) {
   const formData = new FormData();
@@ -6,6 +6,7 @@ export async function uploadImage(file) {
 
   const res = await fetch(`${API_ROOT}/me/images`, {
     method: "POST",
+    headers: authHeaders(),
     body: formData,
   });
 
