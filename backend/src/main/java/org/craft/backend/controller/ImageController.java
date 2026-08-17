@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -25,9 +27,17 @@ public class ImageController {
     private final UserService userService;
 
     @PostMapping("/me/images")
-    public ResponseEntity<ImageUploadResponse> upload(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<ImageUploadResponse> upload(@RequestParam("file") MultipartFile file,
+                                                      HttpServletRequest request) throws IOException {
         User user = userService.getFirst();
-        return ResponseEntity.ok(imageService.upload(user, file));
+        ImageService.UploadedImage uploaded = imageService.upload(user, file);
+
+        String url = ServletUriComponentsBuilder.fromContextPath(request)
+                .path("/api/v1/images/")
+                .path(uploaded.key())
+                .toUriString();
+
+        return ResponseEntity.ok(new ImageUploadResponse(uploaded.key(), url));
     }
 
     @GetMapping("/images/{*key}")
