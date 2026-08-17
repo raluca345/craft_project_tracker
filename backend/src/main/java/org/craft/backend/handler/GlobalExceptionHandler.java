@@ -7,6 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,6 +42,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ImageFileException.class)
     public ResponseEntity<Map<String, Object>> handleImageFile(ImageFileException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password.");
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password.");
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<Map<String, Object>> handleLocked(LockedException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, "Your account has been locked. Please contact support.");
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Map<String, Object>> handleDisabled(DisabledException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, "Your account has been disabled. Please contact support.");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, "You don't have permission to access this resource.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
