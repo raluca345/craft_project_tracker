@@ -1,10 +1,10 @@
 package org.craft.backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.craft.backend.config.AuthHelper;
 import org.craft.backend.dto.ImageUploadResponse;
 import org.craft.backend.model.User;
 import org.craft.backend.service.ImageService;
-import org.craft.backend.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +24,12 @@ import java.io.IOException;
 @RequestMapping("/api/v1")
 public class ImageController {
     private final ImageService imageService;
-    private final UserService userService;
+    private final AuthHelper authHelper;
 
     @PostMapping("/me/images")
     public ResponseEntity<ImageUploadResponse> upload(@RequestParam("file") MultipartFile file,
                                                       HttpServletRequest request) throws IOException {
-        User user = userService.getFirst();
+        User user = authHelper.getCurrentUser();
         ImageService.UploadedImage uploaded = imageService.upload(user, file);
 
         String url = ServletUriComponentsBuilder.fromContextPath(request)
