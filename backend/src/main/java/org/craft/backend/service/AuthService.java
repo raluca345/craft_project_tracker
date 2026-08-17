@@ -30,7 +30,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        return AuthResponse.fromUser(token, user);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -41,6 +41,6 @@ public class AuthService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        return AuthResponse.fromUser(token, user);
     }
 }
