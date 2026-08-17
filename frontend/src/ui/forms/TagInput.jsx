@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { autocomplete } from "../api/apiTags";
+import { autocomplete } from "../../api/apiTags";
 
 export default function TagInput({ value, onChange }) {
   const [query, setQuery] = useState("");

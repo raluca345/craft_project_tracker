@@ -1,36 +1,13 @@
 import { Link } from "react-router-dom";
-import SampleProjectCard from "../ui/SampleProjectCard.jsx";
-import Footer from "../ui/Footer.jsx";
 import { LANDING_PROJECTS } from "../landingProjects.js";
+import AppHeader from "../ui/layout/AppHeader.jsx";
+import Footer from "../ui/layout/Footer.jsx";
+import SampleProjectCard from "../ui/project/SampleProjectCard.jsx";
 
-export default function LandingPage() {
+export default function LandingPage({ isLoggedIn, user }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-6 py-4">
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-sm font-semibold text-(--accent-color2)"
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-base shadow-sm">
-            🧶
-          </span>
-          Craft Project Tracker
-        </Link>
-        <nav className="flex items-center gap-2">
-          <Link
-            to="/login"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-amber-100 hover:text-slate-800"
-          >
-            Log in
-          </Link>
-          <Link
-            to="/signup"
-            className="rounded-lg bg-fuchsia-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-fuchsia-600"
-          >
-            Sign up
-          </Link>
-        </nav>
-      </header>
+      <AppHeader isLoggedIn={isLoggedIn} user={user} />
 
       <main className="flex-1 px-6">
         <section className="mx-auto flex max-w-5xl flex-col items-center gap-10 py-12 text-center md:py-16">
@@ -58,10 +35,10 @@ export default function LandingPage() {
           </div>
 
           <Link
-            to="/signup"
+            to={isLoggedIn ? "/home" : "/signup"}
             className="rounded-lg bg-fuchsia-500 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-fuchsia-600"
           >
-            Start your own board
+            {isLoggedIn ? "Open your board" : "Start your own board"}
           </Link>
         </section>
       </main>

@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import "../App.css";
-import SwimlaneBoard from "../ui/SwimlaneBoard";
-import GridBoard from "../ui/GridBoard";
+import SwimlaneBoard from "../ui/board/SwimlaneBoard";
+import GridBoard from "../ui/board/GridBoard";
 import { DragDropProvider } from "@dnd-kit/react";
 import { getStatuses } from "../api/apiStatuses";
-import NotesModal from "../ui/NotesModal";
-import ConfirmDialog from "../ui/ConfirmDialog";
-import ErrorBox from "../ui/ErrorBox";
-import SearchBar from "../ui/SearchBar";
-import Pagination from "../ui/Pagination";
+import NotesModal from "../ui/project/NotesModal";
+import ConfirmDialog from "../ui/feedback/ConfirmDialog";
+import ErrorBox from "../ui/feedback/ErrorBox";
+import SearchBar from "../ui/navigation/SearchBar";
+import Pagination from "../ui/navigation/Pagination";
+import AppHeader from "../ui/layout/AppHeader";
 import { useProjectError } from "../hooks/useProjectError";
 import { useProjectModals } from "../hooks/useProjectModals";
 import { useProjectsList } from "../hooks/useProjectsList";
@@ -17,7 +18,7 @@ import { filterProjects } from "../utils/searchProjects";
 
 const PAGE_SIZE = 12;
 
-function BoardPage() {
+function BoardPage({ isLoggedIn, user }) {
   const [statuses, setStatuses] = useState([]);
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
@@ -104,6 +105,7 @@ function BoardPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <AppHeader isLoggedIn={isLoggedIn} user={user} />
       <DragDropProvider onDragEnd={handleDragEnd}>
         <main className="flex-1 p-4">
           <ErrorBox message={error} onDismiss={clearError} />
@@ -117,10 +119,7 @@ function BoardPage() {
             onCancel={handleCancelDelete}
             onConfirm={handleConfirmDelete}
           />
-          <div className="flex items-center justify-between">
-            <h1 className="p-4 m-2 text-2xl font-bold text-(--accent-color2)">
-              Craft Project Tracker
-            </h1>
+          <div className="mb-4 flex justify-end">
             <SearchBar
               value={draft}
               onChange={setDraft}

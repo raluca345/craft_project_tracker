@@ -1,4 +1,4 @@
-import { PROJECT_TYPE_ICON_CREDITS } from "../projectTypeIcons.js";
+import { PROJECT_TYPE_ICON_CREDITS } from "../../projectTypeIcons.js";
 
 export default function Footer() {
   return (

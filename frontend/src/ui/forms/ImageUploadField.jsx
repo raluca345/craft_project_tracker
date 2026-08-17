@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { IMAGE_ACCEPT, validateImageFile } from "../commons/imageValidation";
+import { IMAGE_ACCEPT, validateImageFile } from "../../commons/imageValidation";
 
 export default function ImageUploadField({
   onFileSelected,

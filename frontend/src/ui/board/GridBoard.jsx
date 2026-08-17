@@ -1,5 +1,5 @@
-import ProjectModal from "../commons/ProjectModal";
-import ProjectCard from "./ProjectCard";
+import ProjectModal from "../project/ProjectModal";
+import ProjectCard from "../project/ProjectCard";
 
 export default function GridBoard({
   projects,

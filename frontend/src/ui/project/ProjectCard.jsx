@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/react";
 import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
-import { API_ROOT } from "../api/apiCore";
+import { API_ROOT } from "../../api/apiCore";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 import TapeCorner from "./TapeCorner.jsx";
 import {

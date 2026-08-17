@@ -1,7 +1,7 @@
-import ProjectModal from "../commons/ProjectModal";
+import ProjectModal from "../project/ProjectModal";
 import ProjectLane from "./ProjectLane";
-import ProjectCard from "./ProjectCard";
-import { formatStatus } from "../api/apiStatuses";
+import ProjectCard from "../project/ProjectCard";
+import { formatStatus } from "../../api/apiStatuses";
 
 export default function SwimlaneBoard({
   statuses,

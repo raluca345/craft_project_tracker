@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import FormField from "../ui/FormField";
-import AutocompleteField from "../ui/AutocompleteField";
-import TagInput from "../ui/TagInput";
-import ImageUploadField from "../ui/ImageUploadField";
-import { formatStatus } from "../api/apiStatuses";
-import { uploadImage } from "../api/apiImages";
-import { API_ROOT } from "../api/apiCore";
-import { getErrorMessage } from "./errors";
+import FormField from "../forms/FormField";
+import AutocompleteField from "../forms/AutocompleteField";
+import TagInput from "../forms/TagInput";
+import ImageUploadField from "../forms/ImageUploadField";
+import { formatStatus } from "../../api/apiStatuses";
+import { uploadImage } from "../../api/apiImages";
+import { API_ROOT } from "../../api/apiCore";
+import { getErrorMessage } from "../../commons/errors";
 import {
   INITIAL_FORM_STATE,
   INITIAL_ERRORS,
@@ -14,11 +14,11 @@ import {
   hasErrors,
   projectToForm,
   formToPayload,
-} from "./projectForm";
+} from "../../commons/projectForm";
 import {
   CRAFT_SUGGESTIONS,
   TOOL_SUGGESTIONS,
-} from "../constants/projectSuggestions";
+} from "../../constants/projectSuggestions";
 
 const INPUT_STYLE =
   "rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-fuchsia-400 focus:outline-none";
