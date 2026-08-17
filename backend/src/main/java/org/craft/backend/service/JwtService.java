@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.craft.backend.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,11 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails user) {
-        return generateToken(new HashMap<>(), user);
+        User u = (User) user;
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", u.getId().toString());
+        claims.put("name", u.getName());
+        return generateToken(claims, user);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

@@ -11,7 +11,7 @@ function loadUser() {
   if (!token) return null;
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return { email: payload.sub };
+    return { id: payload.id, name: payload.name, email: payload.sub };
   } catch {
     clearToken();
     return null;
