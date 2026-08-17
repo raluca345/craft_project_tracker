@@ -15,6 +15,8 @@ export function getErrorMessage(error) {
         return "This item was already changed. Please refresh and try again.";
       case 413:
         return "That file is too large. Please choose a smaller image.";
+      case 503:
+        return "We couldn't save your image right now. Please try again in a moment.";
       case 500:
         return "Something went wrong. Please try again.";
       default:

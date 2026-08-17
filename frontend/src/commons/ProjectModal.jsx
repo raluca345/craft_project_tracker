@@ -204,6 +204,9 @@ export default function ProjectModal({
                 : null
             }
             onFileSelected={handleFileSelected}
+            onInvalid={(message) =>
+              setErrors((prev) => ({ ...prev, imageKey: message }))
+            }
           />
         </FormField>
         <FormField label="Notes" error={errors.notes}>

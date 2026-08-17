@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
+import { IMAGE_ACCEPT, validateImageFile } from "../commons/imageValidation";
 
-export default function ImageUploadField({ onFileSelected, existingImageUrl }) {
+export default function ImageUploadField({
+  onFileSelected,
+  onInvalid = () => {},
+  existingImageUrl,
+}) {
   const [file, setFile] = useState(null);
   const previewUrl = useMemo(() => {
     if (file) return URL.createObjectURL(file);
@@ -15,10 +20,16 @@ export default function ImageUploadField({ onFileSelected, existingImageUrl }) {
 
   function handleChange(e) {
     const selected = e.target.files[0];
-    if (selected) {
-      setFile(selected);
-      onFileSelected(selected);
+    if (!selected) return;
+
+    const error = validateImageFile(selected);
+    if (error) {
+      onInvalid(error);
+      return;
     }
+
+    setFile(selected);
+    onFileSelected(selected);
   }
 
   return (
@@ -32,7 +43,12 @@ export default function ImageUploadField({ onFileSelected, existingImageUrl }) {
       )}
       <label className="cursor-pointer rounded-lg border border-dashed border-slate-300 px-3 py-2 text-center text-sm text-slate-500 transition-colors hover:border-fuchsia-400 hover:text-fuchsia-600">
         {file ? "Change image" : "Choose an image"}
-        <input type="file" accept="image/png" hidden onChange={handleChange} />
+        <input
+          type="file"
+          accept={IMAGE_ACCEPT}
+          hidden
+          onChange={handleChange}
+        />
       </label>
     </div>
   );
