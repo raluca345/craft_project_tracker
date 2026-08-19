@@ -11,7 +11,7 @@ export default function TagInput({ value, onChange }) {
       autocomplete(query).then((tags) => {
         // hide tags already added as chips
         setSuggestions(tags.filter((t) => !value.includes(t.name)));
-      });
+      }).catch(console.error);
     }, 250);
     return () => clearTimeout(timeout);
   }, [query, value]);

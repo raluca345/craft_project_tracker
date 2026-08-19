@@ -26,10 +26,11 @@ export default function ProjectCard({
   });
   const [showAllTags, setShowAllTags] = useState(false);
 
+  const tags = project.tags ?? [];
   const visibleTags = showAllTags
-    ? project.tags
-    : project.tags.slice(0, MAX_VISIBLE_TAGS);
-  const extraTagCount = project.tags.length - MAX_VISIBLE_TAGS;
+    ? tags
+    : tags.slice(0, MAX_VISIBLE_TAGS);
+  const extraTagCount = tags.length - MAX_VISIBLE_TAGS;
 
   return (
     <div ref={ref} className="card-container mt-8">
@@ -94,23 +95,35 @@ export default function ProjectCard({
                 </p>
               </div>
               <div className="mt-2 flex flex-col items-start gap-1">
-                <div className="flex flex-wrap gap-2">
-                  {visibleTags.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      title={tag}
-                      aria-label={`Search projects tagged ${tag}`}
-                      onClick={() => onTagClick(tag)}
-                      className={`inline-block cursor-pointer rounded-md bg-amber-100 px-2 py-0.5 text-sm font-bold text-amber-700 shadow-sm transition-colors hover:bg-amber-200 ${
-                        showAllTags
-                          ? ""
-                          : "max-w-17.5 overflow-hidden text-ellipsis whitespace-nowrap"
-                      }`}
-                    >
-                      #{tag}
-                    </button>
-                  ))}
+                <div
+                  className={`grid items-start gap-2 ${
+                    showAllTags
+                      ? "grid-cols-1"
+                      : "grid-cols-[minmax(0,1fr)_auto]"
+                  }`}
+                >
+                  <div
+                    className={`flex gap-2 ${
+                      showAllTags ? "flex-wrap" : "flex-nowrap overflow-hidden"
+                    }`}
+                  >
+                    {visibleTags.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        title={tag}
+                        aria-label={`Search projects tagged ${tag}`}
+                        onClick={() => onTagClick(tag)}
+                        className={`inline-block cursor-pointer rounded-md bg-amber-100 px-2 py-0.5 text-sm font-bold text-amber-700 shadow-sm transition-colors hover:bg-amber-200 ${
+                          !showAllTags
+                            ? "min-w-0 shrink overflow-hidden text-ellipsis whitespace-nowrap"
+                            : ""
+                        }`}
+                      >
+                        #{tag}
+                      </button>
+                    ))}
+                  </div>
                   {!showAllTags && extraTagCount > 0 && (
                     <button
                       type="button"
@@ -120,17 +133,16 @@ export default function ProjectCard({
                       +{extraTagCount}
                     </button>
                   )}
-
-                  {showAllTags && project.tags.length > MAX_VISIBLE_TAGS && (
-                    <button
-                      type="button"
-                      onClick={() => setShowAllTags(false)}
-                      className="text-sm font-medium text-slate-500 hover:text-slate-700"
-                    >
-                      Show less
-                    </button>
-                  )}
                 </div>
+                {showAllTags && project.tags.length > MAX_VISIBLE_TAGS && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllTags(false)}
+                    className="text-sm font-medium text-slate-500 hover:text-slate-700"
+                  >
+                    Show less
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -37,8 +37,8 @@ export default function ConfirmDialog({ project, onCancel, onConfirm }) {
             onClick={() => {
               Promise.resolve(onConfirm(project))
                 .then(() => dialogRef.current?.close())
-                .catch(() => {
-                  // Keep the dialog open so the user can retry.
+                .catch((err) => {
+                  console.error("Failed to delete project:", err);
                 });
             }}
             className="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"

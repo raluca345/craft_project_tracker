@@ -88,8 +88,8 @@ export default function ProjectModal({
         setFormState(INITIAL_FORM_STATE);
         setErrors(INITIAL_ERRORS);
       })
-      .catch(() => {
-        // Keep the dialog open so the user can retry.
+      .catch((err) => {
+        console.error("Failed to save project:", err);
       });
   }
 

@@ -23,6 +23,7 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
       onSignup(data);
       navigate("/home");
     } catch (err) {
+      console.error(err);
       setError(getErrorMessage(err));
     }
   }

@@ -22,6 +22,7 @@ export default function LoginPage({ isLoggedIn, user, onLogin }) {
       onLogin(data);
       navigate("/home");
     } catch (err) {
+      console.error(err);
       setError(getErrorMessage(err));
     }
   }

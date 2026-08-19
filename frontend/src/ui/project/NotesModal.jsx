@@ -31,8 +31,8 @@ export default function NotesModal({ project, onCancel, onSave }) {
       .then(() => {
         dialogRef.current?.close();
       })
-      .catch(() => {
-        // Keep the dialog open so the user can retry.
+      .catch((err) => {
+        console.error("Failed to save notes:", err);
       });
   }
 
