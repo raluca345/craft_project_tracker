@@ -17,19 +17,21 @@ export default function AuthActions({ isLoggedIn, user, onLogout }) {
 
   if (isLoggedIn) {
     return (
-      <div ref={ref} className="relative">
+      <div ref={ref} className="relative right-20">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           className="rounded-full focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2"
           aria-label="Open account menu"
         >
-          <Avatar user={user} size="h-9 w-9" />
+          <Avatar user={user} size="h-15 w-15" />
         </button>
         {open && (
-          <div className="absolute right-0 z-50 mt-2 w-56 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+          <div className="absolute left-1/2 z-50 mt-4 w-56 -translate-x-1/2 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
             <div className="border-b border-slate-100 px-4 py-3">
-              <p className="text-sm font-semibold text-slate-800">{user.name}</p>
+              <p className="text-sm font-semibold text-slate-800">
+                {user.name}
+              </p>
               <p className="text-xs text-slate-500">{user.email}</p>
             </div>
             <Link
@@ -41,7 +43,10 @@ export default function AuthActions({ isLoggedIn, user, onLogout }) {
             </Link>
             <button
               type="button"
-              onClick={() => { setOpen(false); onLogout(); }}
+              onClick={() => {
+                setOpen(false);
+                onLogout();
+              }}
               className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
             >
               Log out
