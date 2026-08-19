@@ -30,6 +30,11 @@ export class ApiError extends Error {
 
 export async function handleResponse(res) {
   if (!res.ok) {
+    if (res.status === 403) {
+      clearToken();
+      window.location.href = "/login";
+      throw new ApiError("Session expired", 403);
+    }
     let message;
     try {
       const body = await res.json();

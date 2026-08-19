@@ -5,13 +5,23 @@ import LandingPage from "./pages/LandingPage.jsx";
 import BoardPage from "./pages/BoardPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
 
 function loadUser() {
   const token = getToken();
   if (!token) return null;
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return { id: payload.id, name: payload.name, email: payload.sub };
+    if (payload.exp && payload.exp < Date.now() / 1000) {
+      clearToken();
+      return null;
+    }
+    return {
+      id: payload.id,
+      name: payload.name,
+      email: payload.sub,
+      avatarKey: payload.avatarKey ?? null,
+    };
   } catch {
     clearToken();
     return null;
@@ -24,7 +34,12 @@ function App() {
 
   function handleAuth(data) {
     setToken(data.token);
-    setUser({ id: data.id, name: data.name, email: data.email });
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      avatarKey: data.avatarKey ?? null,
+    });
   }
 
   function handleLogout() {
@@ -32,18 +47,32 @@ function App() {
     setUser(null);
   }
 
+  function handleUserUpdate(updated) {
+    setUser((prev) => ({ ...prev, ...updated }));
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<LandingPage isLoggedIn={isLoggedIn} user={user} />}
+          element={<LandingPage isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />}
         />
         <Route
           path="/home"
           element={
             isLoggedIn ? (
               <BoardPage isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            isLoggedIn ? (
+              <SettingsPage isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} onUserUpdate={handleUserUpdate} />
             ) : (
               <Navigate to="/login" replace />
             )
