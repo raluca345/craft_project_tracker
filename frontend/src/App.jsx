@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { setToken, clearToken, getToken } from "./api/apiCore.js";
+import ProtectedRoute from "./ui/auth/ProtectedRoute.jsx";
+import PublicOnlyRoute from "./ui/auth/PublicOnlyRoute.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import BoardPage from "./pages/BoardPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -61,41 +63,33 @@ function App() {
         <Route
           path="/home"
           element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <BoardPage isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            </ProtectedRoute>
           }
         />
         <Route
           path="/settings"
           element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <SettingsPage isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} onUserUpdate={handleUserUpdate} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            </ProtectedRoute>
           }
         />
         <Route
           path="/login"
           element={
-            isLoggedIn ? (
-              <Navigate to="/home" replace />
-            ) : (
+            <PublicOnlyRoute isLoggedIn={isLoggedIn}>
               <LoginPage isLoggedIn={isLoggedIn} user={user} onLogin={handleAuth} />
-            )
+            </PublicOnlyRoute>
           }
         />
         <Route
           path="/signup"
           element={
-            isLoggedIn ? (
-              <Navigate to="/home" replace />
-            ) : (
+            <PublicOnlyRoute isLoggedIn={isLoggedIn}>
               <SignupPage isLoggedIn={isLoggedIn} user={user} onSignup={handleAuth} />
-            )
+            </PublicOnlyRoute>
           }
         />
       </Routes>
