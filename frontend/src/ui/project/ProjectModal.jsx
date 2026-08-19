@@ -35,6 +35,7 @@ export default function ProjectModal({
   const dialogRef = useRef(null);
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [errors, setErrors] = useState(INITIAL_ERRORS);
+  const [saving, setSaving] = useState(false);
   const [prevOpenRequest, setPrevOpenRequest] = useState(
     existingProject ?? isOpen,
   );
@@ -73,6 +74,7 @@ export default function ProjectModal({
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (saving) return;
     const nextErrors = validate(formState);
     setErrors(nextErrors);
     if (hasErrors(nextErrors)) {
@@ -82,6 +84,7 @@ export default function ProjectModal({
 
     const payload = formToPayload(formState, existingProject);
 
+    setSaving(true);
     Promise.resolve(onSave(payload))
       .then(() => {
         dialogRef.current?.close();
@@ -90,6 +93,9 @@ export default function ProjectModal({
       })
       .catch((err) => {
         console.error("Failed to save project:", err);
+      })
+      .finally(() => {
+        setSaving(false);
       });
   }
 
@@ -235,7 +241,8 @@ export default function ProjectModal({
           </button>
           <button
             type="submit"
-            className="rounded-lg bg-fuchsia-500 px-4 py-2 text-sm font-medium text-white hover:bg-fuchsia-600"
+            disabled={saving}
+            className="rounded-lg bg-fuchsia-500 px-4 py-2 text-sm font-medium text-white hover:bg-fuchsia-600 disabled:opacity-50 disabled:hover:bg-fuchsia-500"
           >
             Save
           </button>

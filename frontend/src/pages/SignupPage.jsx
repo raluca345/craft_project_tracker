@@ -14,9 +14,12 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     setError(null);
     try {
       const data = await register(name, email, password);
@@ -25,6 +28,8 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
     } catch (err) {
       console.error(err);
       setError(getErrorMessage(err));
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -91,9 +96,10 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
 
           <button
             type="submit"
-            className="rounded-lg bg-fuchsia-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-fuchsia-600"
+            disabled={submitting}
+            className="rounded-lg bg-fuchsia-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-fuchsia-600 disabled:opacity-50 disabled:hover:bg-fuchsia-500"
           >
-            Sign up
+            {submitting ? "Creating account…" : "Sign up"}
           </button>
 
           <p className="text-center text-sm text-slate-500">
