@@ -1,11 +1,8 @@
 package org.craft.backend.dto;
 
 import lombok.Data;
-import org.craft.backend.model.Project;
 import org.craft.backend.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,7 +12,6 @@ public class UserResponse {
     private String email;
     private String password;
     private String avatarKey;
-    private List<Project> projects = new ArrayList<>();
 
     public static UserResponse toResponse(User user) {
         UserResponse response = new UserResponse();
@@ -24,18 +20,6 @@ public class UserResponse {
         response.setEmail(user.getEmail());
         response.setPassword(user.getPassword());
         response.setAvatarKey(user.getAvatarKey());
-        response.setProjects(user.getProjects());
         return response;
-    }
-
-    public static User toEntity(UserResponse response) {
-        User user = new User();
-        user.setId(response.getId());
-        user.setName(response.getName());
-        user.setEmail(response.getEmail());
-        user.setPassword(response.getPassword());
-        user.setAvatarKey(response.getAvatarKey());
-        user.setProjects(response.getProjects());
-        return user;
     }
 }
