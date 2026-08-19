@@ -3,11 +3,14 @@ package org.craft.backend.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.craft.backend.config.AuthHelper;
+import org.craft.backend.dto.AuthResponse;
+import org.craft.backend.dto.ChangeEmailRequest;
 import org.craft.backend.dto.CreateUserRequest;
 import org.craft.backend.dto.RenameUserRequest;
 import org.craft.backend.dto.UserResponse;
 import org.craft.backend.model.User;
 import org.craft.backend.service.ImageService;
+import org.craft.backend.service.JwtService;
 import org.craft.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final AuthHelper authHelper;
     private final ImageService imageService;
+    private final JwtService jwtService;
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable UUID id) {
@@ -48,6 +52,21 @@ public class UserController {
     public ResponseEntity<UserResponse> editUser(@Valid @RequestBody CreateUserRequest request, @PathVariable UUID id) {
         UserResponse user = userService.editUser(id, request);
         return ResponseEntity.ok(user);
+    }
+
+    @PatchMapping("/me/rename")
+    public ResponseEntity<UserResponse> rename(@Valid @RequestBody RenameUserRequest request) {
+        User user = authHelper.getCurrentUser();
+        UserResponse updated = userService.renameUser(user.getId(), request);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/me/email")
+    public ResponseEntity<AuthResponse> changeEmail(@Valid @RequestBody ChangeEmailRequest request) {
+        User user = authHelper.getCurrentUser();
+        User updated = userService.changeEmail(user.getId(), request);
+        String token = jwtService.generateToken(updated);
+        return ResponseEntity.ok(AuthResponse.fromUser(token, updated));
     }
 
     @PostMapping("/me/avatar")

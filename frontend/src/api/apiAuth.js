@@ -28,3 +28,21 @@ export async function uploadAvatar(file) {
   });
   return handleResponse(res);
 }
+
+export async function rename(name) {
+  const res = await fetch(`${API_ROOT}/me/rename`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ name }),
+  });
+  return handleResponse(res);
+}
+
+export async function changeEmail(email) {
+  const res = await fetch(`${API_ROOT}/me/email`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ email }),
+  });
+  return handleResponse(res);
+}

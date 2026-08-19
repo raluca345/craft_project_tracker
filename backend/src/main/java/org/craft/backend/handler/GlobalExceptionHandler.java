@@ -1,5 +1,6 @@
 package org.craft.backend.handler;
 
+import org.craft.backend.exceptions.EmailAlreadyTakenException;
 import org.craft.backend.exceptions.ImageFileException;
 import org.craft.backend.exceptions.ProjectNotFoundException;
 import org.craft.backend.exceptions.UserNotFoundException;
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(EmailAlreadyTakenException.class)
+    public ResponseEntity<Map<String, Object>> handleEmailAlreadyTaken(EmailAlreadyTakenException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(ProjectNotFoundException.class)

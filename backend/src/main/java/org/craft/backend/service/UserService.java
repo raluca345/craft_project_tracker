@@ -5,10 +5,10 @@ import org.craft.backend.dto.ChangeEmailRequest;
 import org.craft.backend.dto.CreateUserRequest;
 import org.craft.backend.dto.RenameUserRequest;
 import org.craft.backend.dto.UserResponse;
+import org.craft.backend.exceptions.EmailAlreadyTakenException;
 import org.craft.backend.exceptions.UserNotFoundException;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +24,6 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
                 "not found"));
         return UserResponse.toResponse(user);
-    }
-
-    public User getFirst() {
-        return userRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new UserNotFoundException("No users found"));
     }
 
     public UserResponse getUserByEmail(String email) {
@@ -57,13 +52,19 @@ public class UserService {
         return UserResponse.toResponse(user);
     }
 
-    public UserResponse changeEmail(UUID id, ChangeEmailRequest request) {
+    public User changeEmail(UUID id, ChangeEmailRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
                 "not found"));
-        user.setEmail(request.getEmail());
+        String newEmail = request.getEmail().toLowerCase();
+        userRepository.findByEmail(newEmail).ifPresent(existing -> {
+            if (!existing.getId().equals(id)) {
+                throw new EmailAlreadyTakenException("Unable to update email");
+            }
+        });
+        user.setEmail(newEmail);
 
         userRepository.save(user);
-        return UserResponse.toResponse(user);
+        return user;
     }
 
     public UserResponse editUser(UUID id, CreateUserRequest request) {

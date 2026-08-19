@@ -38,7 +38,7 @@ export async function handleResponse(res) {
     let message;
     try {
       const body = await res.json();
-      message = body.error ?? body.message ?? res.statusText;
+      message = body.message ?? body.error ?? res.statusText;
     } catch {
       message = res.statusText;
     }
