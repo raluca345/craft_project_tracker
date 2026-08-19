@@ -1,13 +1,17 @@
 import { useRef, useState } from "react";
 import { uploadAvatar } from "../api/apiAuth";
-import { API_ROOT } from "../api/apiCore";
 import { getErrorMessage } from "../commons/errors";
 import Avatar from "../ui/auth/Avatar.jsx";
 import AppHeader from "../ui/layout/AppHeader.jsx";
 import Footer from "../ui/layout/Footer.jsx";
 import ErrorBox from "../ui/feedback/ErrorBox.jsx";
 
-export default function SettingsPage({ isLoggedIn, user, onLogout, onUserUpdate }) {
+export default function SettingsPage({
+  isLoggedIn,
+  user,
+  onLogout,
+  onUserUpdate,
+}) {
   const [error, setError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
@@ -43,9 +47,6 @@ export default function SettingsPage({ isLoggedIn, user, onLogout, onUserUpdate 
           <ErrorBox message={error} onDismiss={() => setError(null)} />
 
           <section className="mb-10">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Profile picture
-            </h2>
             <div className="flex items-center gap-6">
               <button
                 type="button"
@@ -66,9 +67,6 @@ export default function SettingsPage({ isLoggedIn, user, onLogout, onUserUpdate 
                 onChange={handleFileChange}
               />
               <div>
-                <p className="text-sm text-slate-600">
-                  Click the picture to upload a new one.
-                </p>
                 <p className="text-xs text-slate-400">
                   PNG, JPEG or WebP. Max 10 MB.
                 </p>
