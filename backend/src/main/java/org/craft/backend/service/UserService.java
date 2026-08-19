@@ -82,7 +82,10 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
     //TODO: change password method
     //TODO: user profile pictures, including adding, changing and maybe removing
-    //TODO: real auth eventually. for now just seed one user and scope everything to that one
 }

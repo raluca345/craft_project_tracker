@@ -4,10 +4,10 @@ import AppHeader from "../ui/layout/AppHeader.jsx";
 import Footer from "../ui/layout/Footer.jsx";
 import SampleProjectCard from "../ui/project/SampleProjectCard.jsx";
 
-export default function LandingPage({ isLoggedIn, user }) {
+export default function LandingPage({ isLoggedIn, user, onLogout }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <AppHeader isLoggedIn={isLoggedIn} user={user} />
+      <AppHeader isLoggedIn={isLoggedIn} user={user} onLogout={onLogout} />
 
       <main className="flex-1 px-6">
         <section className="mx-auto flex max-w-5xl flex-col items-center gap-10 py-12 text-center md:py-16">

@@ -1,4 +1,4 @@
-import { API_ROOT, handleResponse } from "./apiCore";
+import { API_ROOT, authHeaders, handleResponse } from "./apiCore";
 
 export async function login(email, password) {
   const res = await fetch(`${API_ROOT}/auth/login`, {
@@ -14,6 +14,17 @@ export async function register(name, email, password) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, email, password }),
+  });
+  return handleResponse(res);
+}
+
+export async function uploadAvatar(file) {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${API_ROOT}/me/avatar`, {
+    method: "POST",
+    headers: { ...authHeaders() },
+    body: form,
   });
   return handleResponse(res);
 }

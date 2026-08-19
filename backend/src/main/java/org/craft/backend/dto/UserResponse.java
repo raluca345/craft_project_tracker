@@ -14,6 +14,7 @@ public class UserResponse {
     private String name;
     private String email;
     private String password;
+    private String avatarKey;
     private List<Project> projects = new ArrayList<>();
 
     public static UserResponse toResponse(User user) {
@@ -22,6 +23,7 @@ public class UserResponse {
         response.setName(user.getName());
         response.setEmail(user.getEmail());
         response.setPassword(user.getPassword());
+        response.setAvatarKey(user.getAvatarKey());
         response.setProjects(user.getProjects());
         return response;
     }
@@ -32,6 +34,7 @@ public class UserResponse {
         user.setName(response.getName());
         user.setEmail(response.getEmail());
         user.setPassword(response.getPassword());
+        user.setAvatarKey(response.getAvatarKey());
         user.setProjects(response.getProjects());
         return user;
     }

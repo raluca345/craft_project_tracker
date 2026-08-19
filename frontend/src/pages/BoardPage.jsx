@@ -18,7 +18,7 @@ import { filterProjects } from "../utils/searchProjects";
 
 const PAGE_SIZE = 12;
 
-function BoardPage({ isLoggedIn, user }) {
+function BoardPage({ isLoggedIn, user, onLogout }) {
   const [statuses, setStatuses] = useState([]);
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
@@ -59,7 +59,7 @@ function BoardPage({ isLoggedIn, user }) {
   });
 
   useEffect(() => {
-    getStatuses().then(setStatuses);
+    getStatuses().then(setStatuses).catch(console.error);
   }, []);
 
   const filteredProjects = filterProjects(projects, query);
@@ -105,7 +105,7 @@ function BoardPage({ isLoggedIn, user }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AppHeader isLoggedIn={isLoggedIn} user={user} />
+      <AppHeader isLoggedIn={isLoggedIn} user={user} onLogout={onLogout} />
       <DragDropProvider onDragEnd={handleDragEnd}>
         <main className="flex-1 p-4">
           <ErrorBox message={error} onDismiss={clearError} />

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import AuthActions from "../auth/AuthActions.jsx";
 
-export default function AppHeader({ isLoggedIn, user, hideAuth }) {
+export default function AppHeader({ isLoggedIn, user, onLogout, hideAuth }) {
   return (
     <header className="flex items-center justify-between px-6 py-4">
       <Link
@@ -13,7 +13,7 @@ export default function AppHeader({ isLoggedIn, user, hideAuth }) {
         </span>
         Craft Project Tracker
       </Link>
-      {!hideAuth && <AuthActions isLoggedIn={isLoggedIn} user={user} />}
+      {!hideAuth && <AuthActions isLoggedIn={isLoggedIn} user={user} onLogout={onLogout} />}
     </header>
   );
 }

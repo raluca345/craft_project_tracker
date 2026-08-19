@@ -40,6 +40,8 @@ public class User implements UserDetails {
     @Builder.Default
     private Role role = Role.USER;
 
+    private String avatarKey;
+
     @OneToMany(mappedBy = "user")
     @Builder.Default
     private List<Project> projects = new ArrayList<>();
