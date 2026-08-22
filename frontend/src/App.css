@@ -1,32 +1,10 @@
 .status-carousel {
-  padding: 0 2.5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.status-carousel.status-carousel--locked {
-  padding: 0;
-}
-
-.status-carousel .swiper-wrapper {
-  align-items: stretch;
-  flex-wrap: nowrap;
-}
-
-.status-carousel.status-carousel--locked .swiper-button-prev,
-.status-carousel.status-carousel--locked .swiper-button-next,
-.status-carousel .swiper-button-disabled,
-.status-carousel .swiper-button-lock {
+.status-carousel::-webkit-scrollbar {
   display: none;
-}
-
-.status-carousel .swiper-button-prev,
-.status-carousel .swiper-button-next {
-  color: var(--accent-color2);
-}
-
-.status-carousel .swiper-button-prev::after,
-.status-carousel .swiper-button-next::after {
-  font-size: 1rem;
-  font-weight: 700;
 }
 
 .placeholder-texture-rose {

@@ -1,18 +1,3 @@
-export function parseProjectSlotId(id) {
-  if (typeof id !== "string" || !id.startsWith("project-slot:")) {
-    return null;
-  }
-
-  const [, status, index] = id.split(":");
-  const parsedIndex = Number(index);
-
-  if (!status || Number.isNaN(parsedIndex)) {
-    return null;
-  }
-
-  return { status, index: parsedIndex };
-}
-
 export function reorderProject(prevProjects, projectId, status, toIndex) {
   const laneProjects = prevProjects.filter((p) => p.status === status);
   const fromIndex = laneProjects.findIndex((p) => p.id === projectId);

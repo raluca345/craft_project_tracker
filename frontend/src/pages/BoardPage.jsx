@@ -13,7 +13,6 @@ import AppHeader from "../ui/layout/AppHeader";
 import { useProjectError } from "../hooks/useProjectError";
 import { useProjectModals } from "../hooks/useProjectModals";
 import { useProjectsList } from "../hooks/useProjectsList";
-import { parseProjectSlotId } from "../utils/projectOrdering";
 import { filterProjects } from "../utils/searchProjects";
 
 const PAGE_SIZE = 12;
@@ -49,9 +48,12 @@ function BoardPage({ isLoggedIn, user, onLogout }) {
     handleSaveProject,
     handleSaveNotes,
     handleConfirmDelete,
-    handleMoveProject,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
   } = useProjectsList({
     showError,
+    statuses,
     setEditingProject,
     setEditingNotes,
     setIsNewProjectOpen,
@@ -80,33 +82,14 @@ function BoardPage({ isLoggedIn, user, onLogout }) {
     currentPage * PAGE_SIZE,
   );
 
-  function handleDragEnd(event) {
-    if (event.canceled) return;
-
-    const { source, target } = event.operation;
-    const sourceId = source?.id;
-    if (sourceId == null) return;
-
-    const project = projects.find((p) => p.id === sourceId);
-    if (!project) return;
-
-    const targetSlot = parseProjectSlotId(target?.id);
-    if (targetSlot && statuses.includes(targetSlot.status)) {
-      handleMoveProject(sourceId, targetSlot.status, targetSlot.index);
-      return;
-    }
-
-    // Cross-lane move: target is a lane (status id)
-    const newStatus = target?.id;
-    if (!statuses.includes(newStatus)) return;
-
-    handleMoveProject(sourceId, newStatus, undefined);
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <AppHeader isLoggedIn={isLoggedIn} user={user} onLogout={onLogout} />
-      <DragDropProvider onDragEnd={handleDragEnd}>
+      <DragDropProvider
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
         <main className="flex-1 p-4">
           <ErrorBox message={error} onDismiss={clearError} />
           <NotesModal

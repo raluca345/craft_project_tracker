@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useDraggable } from "@dnd-kit/react";
+import { SortableKeyboardPlugin } from "@dnd-kit/dom/sortable";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import { API_ROOT } from "../../api/apiCore";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
@@ -12,28 +13,40 @@ import {
 
 const MAX_VISIBLE_TAGS = 2;
 
+// dnd-kit's default OptimisticSortingPlugin physically re-parents our DOM
+// nodes while dragging, which desyncs React and crashes reconciliation.
+const SORTABLE_PLUGINS = [SortableKeyboardPlugin];
+
 export default function ProjectCard({
   project,
+  index,
   onEdit,
   onEditNotes,
   onDelete,
   onTagClick,
-  draggable = true,
 }) {
-  const { ref } = useDraggable({
-    id: project.id,
-    disabled: !draggable,
-  });
   const [showAllTags, setShowAllTags] = useState(false);
 
   const tags = project.tags ?? [];
-  const visibleTags = showAllTags
-    ? tags
-    : tags.slice(0, MAX_VISIBLE_TAGS);
+  const visibleTags = showAllTags ? tags : tags.slice(0, MAX_VISIBLE_TAGS);
   const extraTagCount = tags.length - MAX_VISIBLE_TAGS;
 
+  // Sortable when rendered in a lane (index given); inert in the search grid.
+  const { ref } = useSortable({
+    id: project.id,
+    index,
+    group: project.status,
+    type: "project",
+    plugins: SORTABLE_PLUGINS,
+    disabled: !Number.isInteger(index),
+  });
+
   return (
-    <div ref={ref} className="card-container mt-8">
+    <div
+      ref={ref}
+      data-card
+      className="relative shrink-0 card-container mt-8"
+    >
       <div
         className="relative flex h-70 w-50 flex-col my-1 mx-5"
         style={{ transform: `rotate(${cardRotation(project.id)})` }}

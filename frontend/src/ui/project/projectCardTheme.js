@@ -20,5 +20,5 @@ export const CARD_PLACEHOLDER_CLASSES = {
 export function cardRotation(id) {
   const hash = parseInt((id ?? "").replace(/-/g, "").slice(0, 8), 16);
   if (Number.isNaN(hash)) return "0deg";
-  return hash % 5 - 2 + "deg";
+  return (hash % 5) - 2 + "deg";
 }

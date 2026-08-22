@@ -25,7 +25,6 @@ export default function GridBoard({
           <ProjectCard
             key={project.id}
             project={project}
-            draggable={false}
             onEdit={onEditProject}
             onEditNotes={onEditNotes}
             onDelete={onDelete}

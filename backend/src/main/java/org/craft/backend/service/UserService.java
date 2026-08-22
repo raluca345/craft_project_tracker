@@ -88,5 +88,4 @@ public class UserService {
     }
 
     //TODO: change password method
-    //TODO: user profile pictures, including adding, changing and maybe removing
 }

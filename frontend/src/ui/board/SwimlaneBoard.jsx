@@ -1,6 +1,6 @@
 import ProjectModal from "../project/ProjectModal";
-import ProjectLane from "./ProjectLane";
 import ProjectCard from "../project/ProjectCard";
+import ProjectLane from "./ProjectLane";
 import { formatStatus } from "../../api/apiStatuses";
 
 export default function SwimlaneBoard({
@@ -35,14 +35,18 @@ export default function SwimlaneBoard({
               key={status}
               id={status}
               title={formatStatus(status)}
-              onEdit={onEditProject}
-              onEditNotes={onEditNotes}
-              onDelete={onDelete}
-              onTagClick={onTagClick}
               onAddNew={onAddNew}
             >
-              {projectsByStatus[status]?.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+              {projectsByStatus[status]?.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  onEdit={onEditProject}
+                  onEditNotes={onEditNotes}
+                  onDelete={onDelete}
+                  onTagClick={onTagClick}
+                />
               ))}
             </ProjectLane>
           ))
