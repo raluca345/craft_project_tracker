@@ -5,6 +5,7 @@ import org.craft.backend.config.AuthHelper;
 import org.craft.backend.dto.ImageUploadResponse;
 import org.craft.backend.model.User;
 import org.craft.backend.service.ImageService;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.Duration;
 
 @RequiredArgsConstructor
 @RestController
@@ -45,6 +47,7 @@ public class ImageController {
         ImageService.ImageData image = imageService.getImage(key.replaceFirst("^/", ""));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(image.contentType()))
+                .cacheControl(CacheControl.maxAge(Duration.ofDays(30)).cachePublic().immutable())
                 .body(image.content());
     }
 }
