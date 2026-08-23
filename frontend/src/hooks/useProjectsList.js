@@ -7,7 +7,7 @@ import {
   updateProjectNotes,
   deleteProject,
 } from "../api/apiProjects";
-import { reorderProject, moveProjectToStatus } from "../utils/projectOrdering";
+import { moveProject } from "../utils/projectOrdering";
 
 export function useProjectsList({
   showError,
@@ -30,8 +30,8 @@ export function useProjectsList({
     laneIdsRef.current = statuses;
   }, [statuses]);
 
-  // State as it was before the current drag started, for rollback.
-  const preDragProjectsRef = useRef(null);
+  // Lane the dragged card started in, used to undo cancels and failed saves.
+  const originLaneRef = useRef(null);
 
   useEffect(() => {
     getProjects()
@@ -99,107 +99,91 @@ export function useProjectsList({
     [showError, setProjectToDelete],
   );
 
-  const applyLiveMove = useCallback((prev, projectId, status, toIndex) => {
-    const project = prev.find((p) => p.id === projectId);
-    if (!project) return prev;
-    if (project.status === status) {
-      return reorderProject(prev, projectId, status, toIndex);
-    }
-    return moveProjectToStatus(prev, projectId, status, toIndex);
+  // Mirror a would-be card position into React state so React stays the
+  // single owner of the DOM and renders the drag preview. No-ops when the
+  // position wouldn't change anything (keeps repeated hover events stable).
+  const mirrorMove = useCallback((projectId, status, insertion) => {
+    if (!laneIdsRef.current.includes(status)) return;
+    if (insertion != null && typeof insertion !== "number") return;
+    setProjects((prev) => {
+      const lane = prev.filter((p) => p.status === status);
+      const from = lane.findIndex((p) => p.id === projectId);
+      const to = insertion ?? lane.length;
+      if (from !== -1 && (to === from || to === from + 1)) {
+        return prev;
+      }
+      return moveProject(prev, projectId, status, insertion);
+    });
   }, []);
 
-  const handleDragStart = useCallback(() => {
-    preDragProjectsRef.current = projectsRef.current;
+  const handleDragStart = useCallback((event) => {
+    const projectId = event.operation.source?.id;
+    originLaneRef.current =
+      projectsRef.current.find((p) => p.id === projectId)?.status ?? null;
   }, []);
 
-  // While hovering other cards/lanes, mirror the move into React state so
-  // React stays the single owner of the DOM and renders the preview.
+  // While hovering other cards/lanes, mirror the move into React state.
   const handleDragOver = useCallback(
     (event) => {
       const { source, target } = event.operation;
       const projectId = source?.id;
       if (projectId == null || !target) return;
 
-      const laneIds = laneIdsRef.current;
-
-      // Hovering a lane's empty area: move to the end of that lane.
-      if (laneIds.includes(target.id)) {
-        setProjects((prev) => {
-          const project = prev.find((p) => p.id === projectId);
-          if (!project || project.status === target.id) return prev;
-          return moveProjectToStatus(prev, projectId, target.id, undefined);
-        });
+      // Hovering a lane's empty area: park the card at the end of that lane.
+      if (laneIdsRef.current.includes(target.id)) {
+        mirrorMove(projectId, target.id, null);
         return;
       }
 
-      // Hovering another card: land at that card's slot. Use the pointer's
-      // horizontal position relative to the card to insert before/after it,
-      // which keeps repeated hover events stable (no flip-flopping).
-      const targetStatus = target.sortable?.group;
-      const targetIndex = target.sortable?.index;
-      if (
-        targetStatus == null ||
-        !laneIds.includes(targetStatus) ||
-        typeof targetIndex !== "number"
-      ) {
-        return;
-      }
-      let insertion = targetIndex;
-      const rect = target.element?.getBoundingClientRect();
-      const pointerX = event.operation.position.current.x;
-      if (rect && pointerX > rect.left + rect.width / 2) {
-        insertion += 1;
-      }
-
-      setProjects((prev) => {
-        const lane = prev.filter((p) => p.status === targetStatus);
-        const from = lane.findIndex((p) => p.id === projectId);
-        if (from !== -1 && (insertion === from || insertion === from + 1)) {
-          return prev;
-        }
-        return applyLiveMove(prev, projectId, targetStatus, insertion);
-      });
+      // Hovering another card: land just before it.
+      mirrorMove(projectId, target.sortable?.group, target.sortable?.index);
     },
-    [applyLiveMove],
+    [mirrorMove],
   );
 
   const handleDragEnd = useCallback(
     (event) => {
       const { source, target } = event.operation;
       const projectId = source?.id;
-      const snapshot = preDragProjectsRef.current;
-      preDragProjectsRef.current = null;
+      const originLane = originLaneRef.current;
+      originLaneRef.current = null;
+      if (projectId == null) return;
 
-      if (event.canceled || projectId == null) {
-        if (snapshot) setProjects(snapshot);
+      // Cancelled drag (e.g. Escape): undo the live preview by parking the
+      // card back at the end of its origin lane.
+      if (event.canceled) {
+        if (originLane) mirrorMove(projectId, originLane, null);
         return;
       }
 
-      const laneIds = laneIdsRef.current;
-      const finalStatus = laneIds.includes(target?.id)
-        ? target.id
-        : projectsRef.current.find((p) => p.id === projectId)?.status;
-      if (!finalStatus || !laneIds.includes(finalStatus)) return;
+      // Which lane did the drop land in?
+      let finalLane = null;
+      let insertion = null;
+      if (laneIdsRef.current.includes(target?.id)) {
+        finalLane = target.id;
+      } else if (typeof target?.sortable?.index === "number") {
+        finalLane = target.sortable.group;
+        insertion = target.sortable.index;
+      }
+      // Very fast flicks can drop without any dragover; fall back to wherever
+      // the live preview last left the card and only worry about saving.
+      if (!finalLane || !laneIdsRef.current.includes(finalLane)) {
+        finalLane = projectsRef.current.find((p) => p.id === projectId)?.status;
+        insertion = null;
+      }
+      if (!finalLane) return;
 
-      // Compare against the pre-drag snapshot: the live dragover mirror has
-      // already applied the move by now, so current state alone can't tell
-      // us whether this drag changed the lane.
-      const originalStatus = snapshot?.find((p) => p.id === projectId)?.status;
-      if (snapshot == null || originalStatus === finalStatus) return;
+      mirrorMove(projectId, finalLane, insertion);
 
-      // Safety net for drops that never triggered a dragover (fast flicks).
-      setProjects((prev) => {
-        const project = prev.find((p) => p.id === projectId);
-        if (!project || project.status === finalStatus) return prev;
-        return moveProjectToStatus(prev, projectId, finalStatus, undefined);
-      });
-
-      updateProjectStatus(projectId, finalStatus).catch((err) => {
-        if (snapshot) setProjects(snapshot);
-        showError(err);
-      });
+      // Order within a lane isn't persisted, only the lane itself.
+      if (finalLane !== originLane) {
+        updateProjectStatus(projectId, finalLane).catch((err) => {
+          if (originLane) mirrorMove(projectId, originLane, null);
+          showError(err);
+        });
+      }
     },
-    [showError],
+    [mirrorMove, showError],
   );
 
   return {
