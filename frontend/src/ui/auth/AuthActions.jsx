@@ -17,7 +17,7 @@ export default function AuthActions({ isLoggedIn, user, onLogout }) {
 
   if (isLoggedIn) {
     return (
-      <div ref={ref} className="relative right-20">
+      <div ref={ref} className="relative">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}

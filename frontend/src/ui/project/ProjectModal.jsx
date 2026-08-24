@@ -103,7 +103,7 @@ export default function ProjectModal({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="m-auto w-96 max-w-[90vw] overflow-auto scrollbar-thumb-fuchsia-100 scrollbar-track-fuchsia-200 rounded-2xl p-6 shadow-xl"
+      className="m-auto w-96 max-w-[90vw] overflow-auto scrollbar-thumb-fuchsia-200 rounded-2xl p-6 shadow-xl"
     >
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         <h2 className="text-lg font-semibold text-slate-800">

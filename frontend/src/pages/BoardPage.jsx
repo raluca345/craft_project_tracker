@@ -84,7 +84,16 @@ function BoardPage({ isLoggedIn, user, onLogout }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AppHeader isLoggedIn={isLoggedIn} user={user} onLogout={onLogout} />
+      <AppHeader isLoggedIn={isLoggedIn} user={user} onLogout={onLogout}>
+        <SearchBar
+          value={draft}
+          onChange={setDraft}
+          onSearch={(q) => {
+            setQuery(q);
+            setPage(1);
+          }}
+        />
+      </AppHeader>
       <DragDropProvider
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
@@ -102,16 +111,6 @@ function BoardPage({ isLoggedIn, user, onLogout }) {
             onCancel={handleCancelDelete}
             onConfirm={handleConfirmDelete}
           />
-          <div className="mb-4 flex justify-end">
-            <SearchBar
-              value={draft}
-              onChange={setDraft}
-              onSearch={(q) => {
-                setQuery(q);
-                setPage(1);
-              }}
-            />
-          </div>
           {query.trim() ? (
             loading ? (
               <p className="text-slate-400 text-sm p-4">Loading projects…</p>

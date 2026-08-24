@@ -17,7 +17,7 @@ export default function SearchBar({ value, onChange, onSearch }) {
             placeholder="Search"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="border border-slate-200 rounded-xl pl-8 pr-2.5 mr-5 py-1 focus:border-fuchsia-400 focus:outline-none"
+            className="border border-slate-200 rounded-xl pl-8 pr-2.5 py-1 focus:border-fuchsia-400 focus:outline-none"
           />
         </form>
       </span>
