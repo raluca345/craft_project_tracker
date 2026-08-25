@@ -14,8 +14,9 @@ public class AuthResponse {
     private String name;
     private String email;
     private String avatarKey;
+    private String avatarUrl;
 
-    public static AuthResponse fromUser(String token, User user) {
-        return new AuthResponse(token, user.getId(), user.getName(), user.getEmail(), user.getAvatarKey());
+    public static AuthResponse fromUser(String token, User user, String avatarUrl) {
+        return new AuthResponse(token, user.getId(), user.getName(), user.getEmail(), user.getAvatarKey(), avatarUrl);
     }
 }

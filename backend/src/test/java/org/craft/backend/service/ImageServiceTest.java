@@ -154,14 +154,4 @@ class ImageServiceTest {
         assertThatThrownBy(() -> imageService.upload(user(), file))
                 .isSameAs(storageError);
     }
-
-    @Test
-    void propagatesExceptionWhenGetObjectFails() {
-        SdkException storageError = SdkException.builder().message("Service unavailable").build();
-
-        when(r2Service.getObject(any())).thenThrow(storageError);
-
-        assertThatThrownBy(() -> imageService.getImage("some-key"))
-                .isSameAs(storageError);
-    }
 }

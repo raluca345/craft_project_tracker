@@ -20,6 +20,7 @@ public class ProjectResponse {
     private String yarnUsed;
     private int amountUsed;
     private String imageKey;
+    private String imageUrl;
     private String notes;
     private Status status;
     private List<String> tags = new ArrayList<>();

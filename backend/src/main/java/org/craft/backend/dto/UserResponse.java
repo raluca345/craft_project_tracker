@@ -12,6 +12,7 @@ public class UserResponse {
     private String email;
     private String password;
     private String avatarKey;
+    private String avatarUrl;
 
     public static UserResponse toResponse(User user) {
         UserResponse response = new UserResponse();

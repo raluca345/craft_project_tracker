@@ -61,12 +61,18 @@ public class UserController {
         return ResponseEntity.ok(updated);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> me() {
+        User user = authHelper.getCurrentUser();
+        return ResponseEntity.ok(userService.getMe(user));
+    }
+
     @PatchMapping("/me/email")
     public ResponseEntity<AuthResponse> changeEmail(@Valid @RequestBody ChangeEmailRequest request) {
         User user = authHelper.getCurrentUser();
         User updated = userService.changeEmail(user.getId(), request);
         String token = jwtService.generateToken(updated);
-        return ResponseEntity.ok(AuthResponse.fromUser(token, updated));
+        return ResponseEntity.ok(AuthResponse.fromUser(token, updated, imageService.presignUrl(updated.getAvatarKey())));
     }
 
     @PostMapping("/me/avatar")
@@ -75,6 +81,8 @@ public class UserController {
         ImageService.UploadedImage uploaded = imageService.upload(user, file);
         user.setAvatarKey(uploaded.key());
         userService.save(user);
-        return ResponseEntity.ok(Map.of("avatarKey", uploaded.key()));
+        return ResponseEntity.ok(Map.of(
+                "avatarKey", uploaded.key(),
+                "avatarUrl", imageService.presignUrl(uploaded.key())));
     }
 }

@@ -19,18 +19,23 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
+
+    public UserResponse getMe(User user) {
+        return toResponse(user);
+    }
 
     public UserResponse getUser(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
                 "not found"));
-        return UserResponse.toResponse(user);
+        return toResponse(user);
     }
 
     public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with the " +
                 "email " +
                 "address " + email + " was not found"));
-        return UserResponse.toResponse(user);
+        return toResponse(user);
     }
 
     public UserResponse createUser(CreateUserRequest request) {
@@ -40,7 +45,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
-        return UserResponse.toResponse(user);
+        return toResponse(user);
     }
 
     public UserResponse renameUser(UUID id, RenameUserRequest request) {
@@ -49,7 +54,7 @@ public class UserService {
         user.setName(request.getName());
 
         userRepository.save(user);
-        return UserResponse.toResponse(user);
+        return toResponse(user);
     }
 
     public User changeEmail(UUID id, ChangeEmailRequest request) {
@@ -75,7 +80,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
-        return UserResponse.toResponse(user);
+        return toResponse(user);
     }
 
     public void delete(UUID id) {
@@ -88,4 +93,10 @@ public class UserService {
     }
 
     //TODO: change password method
+
+    private UserResponse toResponse(User user) {
+        UserResponse response = UserResponse.toResponse(user);
+        response.setAvatarUrl(imageService.presignUrl(user.getAvatarKey()));
+        return response;
+    }
 }

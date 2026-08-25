@@ -2,7 +2,6 @@ import { useState } from "react";
 import { SortableKeyboardPlugin } from "@dnd-kit/dom/sortable";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { FaNoteSticky, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
-import { API_ROOT } from "../../api/apiCore";
 import ProjectTypeIcon from "./ProjectTypeIcon.jsx";
 import TapeCorner from "./TapeCorner.jsx";
 import {
@@ -86,12 +85,8 @@ export default function ProjectCard({
               </button>
             </div>
             <div className="h-full w-full flex items-center justify-center text-s text-slate-600">
-              {project.imageKey ? (
-                <img
-                  src={`${API_ROOT}/images/${project.imageKey}`}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
+              {project.imageUrl ? (
+                <img src={project.imageUrl} alt="" className="h-full w-full object-cover" />
               ) : null}
             </div>
           </div>

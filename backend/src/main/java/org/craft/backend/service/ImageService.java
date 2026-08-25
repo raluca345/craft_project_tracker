@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -17,7 +18,8 @@ import java.util.UUID;
 public class ImageService {
     private static final long MAX_UPLOAD_BYTES = 10L * 1024 * 1024; // 10MB, must match the multipart limits in application.properties
 
-    // file extension (normalized to lowercase, no dot) -> content type to store & serve
+    public static final Duration PRESIGN_TTL = Duration.ofDays(7);
+
     private static final Map<String, String> SUPPORTED_IMAGE_TYPES = Map.of(
             "png", "image/png",
             "jpg", "image/jpeg",
@@ -78,7 +80,7 @@ public class ImageService {
 
     private boolean matchesSignature(InputStream in, String extension) throws IOException {
         // Read just enough header bytes to identify the format. We intentionally
-        // don't close the stream here — it's the multipart-provided stream and
+        // don't close the stream here. It's the multipart-provided stream and
         // closing it can invalidate the source for the later full read.
         byte[] head = in.readNBytes(12);
 
@@ -103,13 +105,11 @@ public class ImageService {
         return false;
     }
 
-    public ImageData getImage(String key) throws IOException {
-        try (var object = r2Service.getObject(key)) {
-            return new ImageData(object.response().contentType(), object.readAllBytes());
+    public String presignUrl(String key) {
+        if (key == null) {
+            return null;
         }
-    }
-
-    public record ImageData(String contentType, byte[] content) {
+        return r2Service.presignGetUrl(key, PRESIGN_TTL);
     }
 
     public record UploadedImage(String key, String contentType) {

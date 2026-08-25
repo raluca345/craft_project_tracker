@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { setToken, clearToken, getToken } from "./api/apiCore.js";
+import { getMe } from "./api/apiAuth.js";
 import ProtectedRoute from "./ui/auth/ProtectedRoute.jsx";
 import PublicOnlyRoute from "./ui/auth/PublicOnlyRoute.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
@@ -22,7 +23,7 @@ function loadUser() {
       id: payload.id,
       name: payload.name,
       email: payload.sub,
-      avatarKey: payload.avatarKey ?? null,
+      avatarUrl: null,
     };
   } catch {
     clearToken();
@@ -34,13 +35,41 @@ function App() {
   const [user, setUser] = useState(() => loadUser());
   const isLoggedIn = user !== null;
 
+  // Session restored from the JWT is instant but carries no presigned
+  // image URLs (they expire), so fetch fresh ones for the current user.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    getMe()
+      .then((data) => {
+        if (!cancelled) {
+          setUser((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  id: data.id,
+                  name: data.name,
+                  email: data.email,
+                  avatarUrl: data.avatarUrl ?? null,
+                }
+              : prev,
+          );
+        }
+      })
+      .catch(console.error);
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function handleAuth(data) {
     setToken(data.token);
     setUser({
       id: data.id,
       name: data.name,
       email: data.email,
-      avatarKey: data.avatarKey ?? null,
+      avatarUrl: data.avatarUrl ?? null,
     });
   }
 

@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.net.URI;
+import java.time.Duration;
 
 @Service
 public class R2Service {
@@ -32,6 +32,7 @@ public class R2Service {
     private String bucketName;
 
     private S3Client s3Client;
+    private S3Presigner presigner;
 
     @PostConstruct
     public void init() {
@@ -41,6 +42,12 @@ public class R2Service {
         URI endpoint = URI.create("https://" + accountId + ".r2.cloudflarestorage.com");
 
         s3Client = S3Client.builder()
+                .endpointOverride(endpoint)
+                .credentialsProvider(credentials)
+                .region(Region.US_EAST_1)
+                .build();
+
+        presigner = S3Presigner.builder()
                 .endpointOverride(endpoint)
                 .credentialsProvider(credentials)
                 .region(Region.US_EAST_1)
@@ -57,18 +64,24 @@ public class R2Service {
         return key;
     }
 
-    public ResponseInputStream<GetObjectResponse> getObject(String key) {
-        return s3Client.getObject(GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build());
-    }
-
     public void deleteObject(String key) {
         s3Client.deleteObject(DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build());
     }
-}
 
+    // Short-lived signed GET URL: browsers fetch images straight from R2 while
+    // the bucket stays private and ownership is checked where URLs are minted.
+    public String presignGetUrl(String key, Duration ttl) {
+        GetObjectRequest request = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        return presigner.presignGetObject(b -> b
+                        .getObjectRequest(request)
+                        .signatureDuration(ttl))
+                .url()
+                .toString();
+    }
+}

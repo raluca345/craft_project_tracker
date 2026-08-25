@@ -5,7 +5,6 @@ import TagInput from "../forms/TagInput";
 import ImageUploadField from "../forms/ImageUploadField";
 import { formatStatus } from "../../api/apiStatuses";
 import { uploadImage } from "../../api/apiImages";
-import { API_ROOT } from "../../api/apiCore";
 import { getErrorMessage } from "../../commons/errors";
 import {
   INITIAL_FORM_STATE,
@@ -204,11 +203,7 @@ export default function ProjectModal({
         <FormField label="Image" error={errors.imageKey}>
           <ImageUploadField
             key={existingProject?.id ?? "new"}
-            existingImageUrl={
-              existingProject?.imageKey
-                ? `${API_ROOT}/images/${existingProject.imageKey}`
-                : null
-            }
+            existingImageUrl={existingProject?.imageUrl ?? null}
             onFileSelected={handleFileSelected}
             onInvalid={(message) =>
               setErrors((prev) => ({ ...prev, imageKey: message }))

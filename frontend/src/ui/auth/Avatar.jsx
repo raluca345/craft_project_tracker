@@ -1,5 +1,3 @@
-import { API_ROOT } from "../../api/apiCore";
-
 const AVATAR_COLORS = [
   "bg-rose-300",
   "bg-orange-300",
@@ -26,10 +24,10 @@ function getInitials(name) {
 }
 
 export default function Avatar({ user, size = "w-10 h-10" }) {
-  if (user.avatarKey) {
+  if (user.avatarUrl) {
     return (
       <img
-        src={`${API_ROOT}/images/${user.avatarKey}`}
+        src={user.avatarUrl}
         alt={user.name}
         className={`${size} rounded-full object-cover`}
         title={user.name}

@@ -41,7 +41,7 @@ export default function SettingsPage({
     setUploading(true);
     try {
       const data = await uploadAvatar(file);
-      onUserUpdate({ avatarKey: data.avatarKey });
+      onUserUpdate({ avatarKey: data.avatarKey, avatarUrl: data.avatarUrl });
     } catch (err) {
       console.error(err);
       setError(getErrorMessage(err));

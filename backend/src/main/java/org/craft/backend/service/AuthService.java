@@ -20,6 +20,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ImageService imageService;
 
     public AuthResponse register(RegisterRequest request) {
         User user = new User();
@@ -30,7 +31,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return AuthResponse.fromUser(token, user);
+        return AuthResponse.fromUser(token, user, imageService.presignUrl(user.getAvatarKey()));
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -41,6 +42,6 @@ public class AuthService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user);
-        return AuthResponse.fromUser(token, user);
+        return AuthResponse.fromUser(token, user, imageService.presignUrl(user.getAvatarKey()));
     }
 }

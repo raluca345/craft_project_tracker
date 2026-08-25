@@ -28,9 +28,10 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final TagService tagService;
     private final R2Service r2Service;
+    private final ImageService imageService;
 
     public List<ProjectResponse> getProjects(User user) {
-        return ProjectResponse.toResponses(projectRepository.findByUser(user));
+        return projectRepository.findByUser(user).stream().map(this::toResponse).toList();
     }
 
     public List<ProjectResponse> search(User user, String query) {
@@ -56,7 +57,7 @@ public class ProjectService {
             projects = projectRepository.findByUserAndPatternNameContainingIgnoreCase(user, nameQuery);
         }
 
-        return ProjectResponse.toResponses(projects);
+        return projects.stream().map(this::toResponse).toList();
     }
 
     public ProjectResponse createProject(User user, CreateProjectRequest request) {
@@ -76,7 +77,7 @@ public class ProjectService {
                 .tags(tags)
                 .build();
 
-        return ProjectResponse.toResponse(projectRepository.save(project));
+        return toResponse(projectRepository.save(project));
     }
 
     public ProjectResponse updateStatus(User user, UUID uuid, UpdateStatusRequest request) {
@@ -84,7 +85,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
         project.setStatus(request.getStatus());
 
-        return ProjectResponse.toResponse(projectRepository.save(project));
+        return toResponse(projectRepository.save(project));
     }
 
     public ProjectResponse updateNotes(User user, UUID uuid, UpdateNotesRequest request) {
@@ -92,7 +93,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
         project.setNotes(request.getNotes());
 
-        return ProjectResponse.toResponse(projectRepository.save(project));
+        return toResponse(projectRepository.save(project));
     }
 
     public ProjectResponse editProject(User user, UUID uuid, EditProjectRequest  request) {
@@ -114,7 +115,7 @@ public class ProjectService {
         project.setNotes(request.getNotes());
         project.setTags(tags);
 
-        return ProjectResponse.toResponse(projectRepository.save(project));
+        return toResponse(projectRepository.save(project));
     }
 
     @Transactional
@@ -135,5 +136,11 @@ public class ProjectService {
 
     private List<Tag> getTagsByName(List<String> tagNames) {
         return new ArrayList<>(tagNames.stream().map(tagService::getByNameOrCreate).toList());
+    }
+
+    private ProjectResponse toResponse(Project project) {
+        ProjectResponse response = ProjectResponse.toResponse(project);
+        response.setImageUrl(imageService.presignUrl(project.getImageKey()));
+        return response;
     }
 }
