@@ -1,5 +1,6 @@
-export const API_BASE = "http://localhost:8080/api/v1/me/projects";
-export const API_ROOT = "http://localhost:8080/api/v1";
+export const API_ROOT =
+  import.meta.env.VITE_API_URL ?? "http://localhost:8080/api/v1";
+export const API_BASE = `${API_ROOT}/me/projects`;
 
 const TOKEN_KEY = "auth_token";
 
