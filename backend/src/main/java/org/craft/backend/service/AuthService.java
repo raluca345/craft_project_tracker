@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.craft.backend.dto.AuthResponse;
 import org.craft.backend.dto.LoginRequest;
 import org.craft.backend.dto.RegisterRequest;
-import org.craft.backend.exceptions.UserNotFoundException;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -38,8 +38,7 @@ public class AuthService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userService.getUserByEmail(request.getEmail());
 
         String token = jwtService.generateToken(user);
         return AuthResponse.fromUser(token, user, imageService.presignUrl(user.getAvatarKey()));

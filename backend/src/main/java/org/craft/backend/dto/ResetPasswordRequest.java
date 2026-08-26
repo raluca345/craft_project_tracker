@@ -1,23 +1,17 @@
 package org.craft.backend.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.craft.backend.validation.StrongPassword;
 
 @Data
-public class RegisterRequest {
+public class ResetPasswordRequest {
     @NotBlank
-    @Size(min = 4, max = 40)
-    private String name;
-
-    @NotBlank
-    @Email
-    private String email;
+    private String token;
 
     @NotBlank
     @StrongPassword
     @Size(max = 72)
-    private String password;
+    private String newPassword;
 }

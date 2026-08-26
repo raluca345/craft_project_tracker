@@ -2,7 +2,6 @@ package org.craft.backend.service;
 
 import lombok.Data;
 import org.craft.backend.dto.ChangeEmailRequest;
-import org.craft.backend.dto.CreateUserRequest;
 import org.craft.backend.dto.RenameUserRequest;
 import org.craft.backend.dto.UserResponse;
 import org.craft.backend.exceptions.EmailAlreadyTakenException;
@@ -25,27 +24,9 @@ public class UserService {
         return toResponse(user);
     }
 
-    public UserResponse getUser(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
-                "not found"));
-        return toResponse(user);
-    }
-
-    public UserResponse getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with the " +
-                "email " +
-                "address " + email + " was not found"));
-        return toResponse(user);
-    }
-
-    public UserResponse createUser(CreateUserRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        userRepository.save(user);
-        return toResponse(user);
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with the email " +
+                email + " was not found"));
     }
 
     public UserResponse renameUser(UUID id, RenameUserRequest request) {
@@ -70,17 +51,6 @@ public class UserService {
 
         userRepository.save(user);
         return user;
-    }
-
-    public UserResponse editUser(UUID id, CreateUserRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
-                "not found"));
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        userRepository.save(user);
-        return toResponse(user);
     }
 
     public void delete(UUID id) {

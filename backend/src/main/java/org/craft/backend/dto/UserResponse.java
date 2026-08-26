@@ -10,7 +10,6 @@ public class UserResponse {
     private UUID id;
     private String name;
     private String email;
-    private String password;
     private String avatarKey;
     private String avatarUrl;
 
@@ -19,7 +18,6 @@ public class UserResponse {
         response.setId(user.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
-        response.setPassword(user.getPassword());
         response.setAvatarKey(user.getAvatarKey());
         return response;
     }
