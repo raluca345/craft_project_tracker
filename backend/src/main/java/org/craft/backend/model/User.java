@@ -46,6 +46,9 @@ public class User implements UserDetails {
     @Builder.Default
     private List<Project> projects = new ArrayList<>();
 
+    @Column(nullable = false)
+    private Integer tokenVersion = 0;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

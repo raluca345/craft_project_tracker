@@ -45,6 +45,10 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractTokenVersion(String token) {
+        return extractClaim(token, claims -> claims.get("tv",  String.class));
+    }
+
     public String generateToken(Map<String, Object> extraClaims, UserDetails user) {
         return Jwts
                 .builder()
@@ -64,6 +68,7 @@ public class JwtService {
         if (u.getAvatarKey() != null) {
             claims.put("avatarKey", u.getAvatarKey());
         }
+        claims.put("tv", ((User) user).getTokenVersion().toString());
         return generateToken(claims, user);
     }
 

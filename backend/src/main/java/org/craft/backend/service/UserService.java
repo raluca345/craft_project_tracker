@@ -48,6 +48,7 @@ public class UserService {
             }
         });
         user.setEmail(newEmail);
+        user.setTokenVersion(user.getTokenVersion() + 1);
 
         userRepository.save(user);
         return user;
