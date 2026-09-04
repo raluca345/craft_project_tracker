@@ -10,28 +10,28 @@ import java.util.List;
 @Data
 public class CreateProjectRequest {
     @NotBlank
-    @Size(max = 255)
+    @Size(max = 255, message = "Pattern name must not exceed 255 characters")
     private String patternName;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 100, message = "Craft must not exceed 100 characters")
     private String craft;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 100, message = "Tool type must not exceed 100 characters")
     private String toolType;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 100, message = "Tool size must not exceed 100 characters")
     private String toolSize;
 
-    @Size(max = 100)
+    @Size(max = 100, message = "Yarn weight category must not exceed 100 characters")
     private String yarnWeightCategory;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "Yarn used must not exceed 255 characters")
     private String yarnUsed;
 
-    @Size(max = 2048)
+    @Size(max = 2048, message = "Image key must not exceed 2048 characters")
     private String imageKey;
 
     private String notes;

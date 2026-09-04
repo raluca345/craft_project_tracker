@@ -9,7 +9,7 @@ import org.craft.backend.validation.StrongPassword;
 @Data
 public class RegisterRequest {
     @NotBlank
-    @Size(min = 4, max = 40)
+    @Size(min = 4, max = 40, message = "Name must be between 4 and 40 characters")
     private String name;
 
     @NotBlank
@@ -18,6 +18,6 @@ public class RegisterRequest {
 
     @NotBlank
     @StrongPassword
-    @Size(max = 72)
+    @Size(max = 72, message = "Password must not exceed 72 characters")
     private String password;
 }
