@@ -1,5 +1,7 @@
 import { ApiError } from "../api/apiCore";
 
+// TODO: build dedicated error pages for 404, 409 and 410 instead of
+// returning inline messages from getErrorMessage below.
 export function getErrorMessage(error) {
   if (error instanceof ApiError) {
     switch (error.status) {
