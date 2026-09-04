@@ -2,7 +2,9 @@ package org.craft.backend.handler;
 
 import org.craft.backend.exceptions.EmailAlreadyTakenException;
 import org.craft.backend.exceptions.ImageFileException;
+import org.craft.backend.exceptions.PasswordResetTokenExpiredException;
 import org.craft.backend.exceptions.ProjectNotFoundException;
+import org.craft.backend.exceptions.ResourceNotFoundException;
 import org.craft.backend.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,16 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(PasswordResetTokenExpiredException.class)
+    public ResponseEntity<Map<String, Object>> handleTokenExpired(PasswordResetTokenExpiredException ex) {
+        return buildResponse(HttpStatus.GONE, ex.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
     @ExceptionHandler(ImageFileException.class)
     public ResponseEntity<Map<String, Object>> handleImageFile(ImageFileException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
@@ -78,7 +90,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         String errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                .map(e -> e.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         return buildResponse(HttpStatus.BAD_REQUEST, errors);
     }

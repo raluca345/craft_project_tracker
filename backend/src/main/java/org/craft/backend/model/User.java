@@ -47,7 +47,11 @@ public class User implements UserDetails {
     private List<Project> projects = new ArrayList<>();
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer tokenVersion = 0;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PasswordResetToken passwordResetToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -6,6 +6,7 @@ import org.craft.backend.dto.RenameUserRequest;
 import org.craft.backend.dto.UserResponse;
 import org.craft.backend.exceptions.EmailAlreadyTakenException;
 import org.craft.backend.exceptions.UserNotFoundException;
+import org.craft.backend.model.PasswordResetToken;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
+    private final PasswordResetService passwordResetService;
 
     public UserResponse getMe(User user) {
         return toResponse(user);
@@ -63,7 +65,21 @@ public class UserService {
         userRepository.save(user);
     }
 
-    //TODO: change password method
+    public PasswordResetToken generatePasswordResetTokenForUser(User user) {
+        String token = UUID.randomUUID().toString();
+
+        return passwordResetService.saveToken(user, token);
+    }
+
+    public User getUserById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
+                "not found"));
+    }
+
+    public void changePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 
     private UserResponse toResponse(User user) {
         UserResponse response = UserResponse.toResponse(user);
