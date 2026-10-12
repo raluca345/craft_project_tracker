@@ -146,7 +146,7 @@ public class PasswordResetServiceTest {
 
         assertThatThrownBy(() -> passwordResetService.validatePasswordResetTokenOrThrow("non-existing-token"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Token not found");
+                .hasMessageContaining("reset link is invalid");
     }
 
     @Test
@@ -157,7 +157,7 @@ public class PasswordResetServiceTest {
 
         assertThatThrownBy(() -> passwordResetService.validatePasswordResetTokenOrThrow("test-token"))
                 .isInstanceOf(PasswordResetTokenExpiredException.class)
-                .hasMessageContaining("Token expired");
+                .hasMessageContaining("reset link has expired");
     }
 
     @Test

@@ -27,13 +27,11 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with the email " +
-                email + " was not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public UserResponse renameUser(UUID id, RenameUserRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
-                "not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setName(request.getName());
 
         userRepository.save(user);
@@ -41,12 +39,11 @@ public class UserService {
     }
 
     public User changeEmail(UUID id, ChangeEmailRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
-                "not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         String newEmail = request.getEmail().toLowerCase();
         userRepository.findByEmail(newEmail).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {
-                throw new EmailAlreadyTakenException("Unable to update email");
+                throw new EmailAlreadyTakenException("That email is already in use.");
             }
         });
         user.setEmail(newEmail);
@@ -57,7 +54,7 @@ public class UserService {
     }
 
     public void delete(UUID id) {
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         userRepository.deleteById(id);
     }
 
@@ -72,8 +69,8 @@ public class UserService {
     }
 
     public User getUserById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " " +
-                "not found"));
+        return userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public void changePassword(User user, String newPassword) {

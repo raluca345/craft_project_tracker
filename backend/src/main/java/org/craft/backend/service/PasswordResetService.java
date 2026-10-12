@@ -45,10 +45,11 @@ public class PasswordResetService {
     public boolean validatePasswordResetTokenOrThrow(String token) {
         PasswordResetToken prt = findByToken(token);
         if (prt == null) {
-            throw new ResourceNotFoundException("Token not found");
+            throw new ResourceNotFoundException("This reset link is invalid. Please request a new one.");
         }
         if (prt.getExpiryDate() == null || prt.getExpiryDate().before(Date.from(Instant.now(clock)))) {
-            throw new PasswordResetTokenExpiredException("Token expired");
+            throw new PasswordResetTokenExpiredException(
+                    "This reset link has expired. Password reset links are valid for 10 minutes.");
         }
         return true;
     }

@@ -92,7 +92,7 @@ public class PasswordResetControllerTest {
             request.setEmail("ghost@example.com");
             when(userService.getUserByEmail(request.getEmail()))
                     .thenThrow(new UserNotFoundException(
-                            "User with the email ghost@example.com doesn't exist"));
+                            "User not found"));
 
             mockMvc.perform(post("/api/v1/auth/password-reset/request")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +228,7 @@ public class PasswordResetControllerTest {
                     .content(json)
                     .with(csrf()))
                     .andExpect(status().isInternalServerError())
-                    .andExpect(content().string(containsString("Internal server error")));
+                    .andExpect(content().string(containsString("Something went wrong")));
 
             verify(resetWorkflowService, times(1)).resetPassword(request.getToken(), request.getNewPassword());
         }

@@ -82,7 +82,7 @@ public class ProjectService {
 
     public ProjectResponse updateStatus(User user, UUID uuid, UpdateStatusRequest request) {
         Project project = projectRepository.findByIdAndUser(uuid, user)
-                .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
         project.setStatus(request.getStatus());
 
         return toResponse(projectRepository.save(project));
@@ -90,7 +90,7 @@ public class ProjectService {
 
     public ProjectResponse updateNotes(User user, UUID uuid, UpdateNotesRequest request) {
         Project project = projectRepository.findByIdAndUser(uuid, user)
-                .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
         project.setNotes(request.getNotes());
 
         return toResponse(projectRepository.save(project));
@@ -99,7 +99,7 @@ public class ProjectService {
     public ProjectResponse editProject(User user, UUID uuid, EditProjectRequest  request) {
 
         Project project = projectRepository.findByIdAndUser(uuid, user)
-                .orElseThrow(() -> new ProjectNotFoundException("Project with id " + uuid + " not found"));
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
 
         List<Tag> tags = getTagsByName(request.getTags());
 
@@ -121,7 +121,7 @@ public class ProjectService {
     @Transactional
     public void delete(User user, UUID id) {
         Project project = projectRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new ProjectNotFoundException("Project with id " + id + " not found"));
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
 
         if (project.getImageKey() != null) {
             try {

@@ -3,6 +3,7 @@ package org.craft.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.craft.backend.email.EmailService;
 import org.craft.backend.exceptions.ResourceNotFoundException;
+import org.craft.backend.exceptions.UserNotFoundException;
 import org.craft.backend.model.PasswordResetToken;
 import org.craft.backend.model.User;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class PasswordResetWorkflowService {
             User user = userService.getUserByEmail(email);
             PasswordResetToken token = userService.generatePasswordResetTokenForUser(user);
             emailService.sendPasswordResetEmail(email, token);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException | UserNotFoundException e) {
             // deliberately swallow to not reveal if an account exists
         }
     }

@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchKeyException.class)
     public ResponseEntity<Map<String, Object>> handleNoSuchKey(NoSuchKeyException ex) {
-        return buildResponse(HttpStatus.NOT_FOUND, "Image not found");
+        return buildResponse(HttpStatus.NOT_FOUND, "Image not found. It may have been deleted.");
     }
 
     @ExceptionHandler(SdkException.class)
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleUnexpected(Exception ex) {
         log.error("Unhandled exception", ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong. Please try again.");
     }
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {

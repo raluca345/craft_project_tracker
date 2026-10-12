@@ -31,19 +31,24 @@ export class ApiError extends Error {
 
 export async function handleResponse(res) {
   if (!res.ok) {
-    if (res.status === 403) {
-      clearToken();
-      window.location.href = "/login";
-      throw new ApiError("Session expired", 403);
-    }
     let message;
+    let parsedBody = null;
     try {
-      const body = await res.json();
-      message = body.message ?? body.error ?? res.statusText;
+      parsedBody = await res.json();
+      message = parsedBody.message ?? parsedBody.error ?? res.statusText;
     } catch {
       message = res.statusText;
     }
-    throw new ApiError(message, res.status);
+    if ((res.status === 401 || res.status === 403) && !parsedBody?.message) {
+      // No usable JSON body: Spring's default empty 401/403 for a missing or
+      // expired JWT. Only these trigger the session-expired redirect.
+      clearToken();
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+      throw new ApiError("Your session has expired. Please sign in again.", res.status);
+    }
+    throw new ApiError(message || res.statusText, res.status);
   }
   const text = await res.text();
   return text ? JSON.parse(text) : null;

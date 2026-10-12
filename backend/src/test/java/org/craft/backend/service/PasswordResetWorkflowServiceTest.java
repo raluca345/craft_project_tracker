@@ -90,13 +90,12 @@ public class PasswordResetWorkflowServiceTest {
     }
 
     @Test
-    void sendPasswordResetEmail_userNotFound_propagates() {
+    void sendPasswordResetEmail_userNotFound_swallowsAndDoesNotSendEmail() {
         String email = "missing@example.com";
         when(userService.getUserByEmail(email)).thenThrow(new UserNotFoundException("User not found"));
 
-        assertThatThrownBy(() -> passwordResetWorkflowService.sendPasswordResetEmail(email))
-                .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User not found");
+        assertThatCode(() -> passwordResetWorkflowService.sendPasswordResetEmail(email))
+                .doesNotThrowAnyException();
 
         verify(emailService, never()).sendPasswordResetEmail(anyString(), any());
     }
