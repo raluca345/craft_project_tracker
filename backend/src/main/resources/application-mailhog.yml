@@ -1,0 +1,7 @@
+app:
+  email:
+    provider: mailhog
+
+mail:
+  host: localhost
+  port: 1025

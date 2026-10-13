@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     implementation 'com.resend:resend-java:4.13.0'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
