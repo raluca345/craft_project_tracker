@@ -9,6 +9,7 @@ import org.craft.backend.exceptions.UserNotFoundException;
 import org.craft.backend.model.PasswordResetToken;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -70,10 +71,17 @@ public class UserService {
 
     public User getUserById(UUID id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    public void changePassword(User user, String newPassword) {
+    public void changePassword(User user, String oldPassword, String newPassword) {
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new BadCredentialsException("Invalid password.");
+        }
+        setPassword(user, newPassword);
+    }
+
+    public void setPassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.craft.backend.config.AuthHelper;
 import org.craft.backend.dto.AuthResponse;
 import org.craft.backend.dto.ChangeEmailRequest;
+import org.craft.backend.dto.ChangePasswordRequest;
 import org.craft.backend.dto.RenameUserRequest;
 import org.craft.backend.dto.UserResponse;
 import org.craft.backend.model.User;
@@ -45,11 +46,20 @@ public class UserController {
         User user = authHelper.getCurrentUser();
         User updated = userService.changeEmail(user.getId(), request);
         String token = jwtService.generateToken(updated);
-        return ResponseEntity.ok(AuthResponse.fromUser(token, updated, imageService.presignUrl(updated.getAvatarKey())));
+        return ResponseEntity
+                .ok(AuthResponse.fromUser(token, updated, imageService.presignUrl(updated.getAvatarKey())));
+    }
+
+    @PatchMapping("/me/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        User user = authHelper.getCurrentUser();
+        userService.changePassword(user, request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/me/avatar")
-    public ResponseEntity<Map<String, String>> uploadAvatar(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Map<String, String>> uploadAvatar(@RequestParam("file") MultipartFile file)
+            throws IOException {
         User user = authHelper.getCurrentUser();
         ImageService.UploadedImage uploaded = imageService.upload(user, file);
         user.setAvatarKey(uploaded.key());

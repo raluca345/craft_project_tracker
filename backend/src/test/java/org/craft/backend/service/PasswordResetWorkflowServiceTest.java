@@ -112,7 +112,7 @@ public class PasswordResetWorkflowServiceTest {
         verify(passwordResetService).validatePasswordResetTokenOrThrow("test-token");
         verify(passwordResetService).findUserIdByTokenOrThrow("test-token");
         verify(userService).getUserById(user.getId());
-        verify(userService).changePassword(user, "new-strong-password");
+        verify(userService).setPassword(user, "new-strong-password");
         verify(passwordResetService).deleteByToken("test-token");
     }
 
@@ -125,7 +125,7 @@ public class PasswordResetWorkflowServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class);
 
         verify(passwordResetService, never()).findUserIdByTokenOrThrow(anyString());
-        verify(userService, never()).changePassword(any(), anyString());
+        verify(userService, never()).setPassword(any(), anyString());
         verify(passwordResetService, never()).deleteByToken(anyString());
     }
 
@@ -138,7 +138,7 @@ public class PasswordResetWorkflowServiceTest {
         assertThatThrownBy(() -> passwordResetWorkflowService.resetPassword("test-token", "new-strong-password"))
                 .isInstanceOf(UserNotFoundException.class);
 
-        verify(userService, never()).changePassword(any(), anyString());
+        verify(userService, never()).setPassword(any(), anyString());
         verify(passwordResetService, never()).deleteByToken(anyString());
     }
 
