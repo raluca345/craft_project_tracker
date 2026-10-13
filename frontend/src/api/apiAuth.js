@@ -53,3 +53,40 @@ export async function changeEmail(email) {
   });
   return handleResponse(res);
 }
+
+export async function changePassword(currentPassword, newPassword) {
+  const res = await fetch(`${API_ROOT}/me/password`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+  return handleResponse(res);
+}
+
+export async function forgotPassword(email) {
+  const res = await fetch(`${API_ROOT}/auth/password-reset/request`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  return handleResponse(res);
+}
+
+export async function verifyResetToken(token) {
+  const res = await fetch(
+    `${API_ROOT}/auth/password-reset/verify?token=${encodeURIComponent(token)}`,
+    {
+      method: "GET",
+    },
+  );
+  return handleResponse(res);
+}
+
+export async function resetPassword(token, newPassword) {
+  const res = await fetch(`${API_ROOT}/auth/password-reset/confirm`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, newPassword }),
+  });
+  return handleResponse(res);
+}

@@ -1,11 +1,17 @@
-import { useRef, useState } from "react";
-import { uploadAvatar, rename, changeEmail } from "../api/apiAuth";
+import { useRef, useState, useCallback } from "react";
+import {
+  uploadAvatar,
+  rename,
+  changeEmail,
+  changePassword,
+} from "../api/apiAuth";
 import { setToken } from "../api/apiCore";
 import { getErrorMessage } from "../commons/errors";
 import Avatar from "../ui/auth/Avatar.jsx";
 import AppHeader from "../ui/layout/AppHeader.jsx";
 import Footer from "../ui/layout/Footer.jsx";
 import ErrorBox from "../ui/feedback/ErrorBox.jsx";
+import ChangePasswordDialog from "../ui/auth/ChangePasswordDialog.jsx";
 
 const INPUT_STYLE =
   "rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-fuchsia-400 focus:outline-none";
@@ -27,6 +33,12 @@ export default function SettingsPage({
   const [editingEmail, setEditingEmail] = useState(false);
   const [emailValue, setEmailValue] = useState(user.email);
   const [savingEmail, setSavingEmail] = useState(false);
+
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const handleClosePasswordDialog = useCallback(() => {
+    setIsPasswordModalOpen(false);
+  }, []);
 
   function handlePickFile() {
     fileRef.current?.click();
@@ -100,6 +112,11 @@ export default function SettingsPage({
         <div className="mx-auto max-w-lg py-12">
           <h1 className="mb-8 text-2xl font-bold text-slate-800">Settings</h1>
           <ErrorBox message={error} onDismiss={() => setError(null)} />
+          <ChangePasswordDialog
+            isOpen={isPasswordModalOpen}
+            onCancel={handleClosePasswordDialog}
+            onSave={changePassword}
+          />
 
           <section className="mb-10">
             <div className="flex items-center gap-6">
@@ -187,8 +204,6 @@ export default function SettingsPage({
                 )}
               </div>
 
-              <div className="border-t border-slate-100" />
-
               <div className="flex items-center justify-between gap-4 py-2">
                 <span className="w-20 shrink-0 text-slate-400">Email</span>
                 {editingEmail ? (
@@ -240,6 +255,27 @@ export default function SettingsPage({
                     </button>
                   </div>
                 )}
+              </div>
+              <div className="border-t border-slate-100" />
+              <div className="flex items-start justify-between gap-4 py-2">
+                <span className="w-20 shrink-0 text-slate-400">Password</span>
+                <div className="flex flex-1 items-center justify-between">
+                  {/* Decorative only: a real password can never be rendered, so
+                      show a fixed mask instead of leaking its length. */}
+                  <span
+                    aria-hidden="true"
+                    className="font-medium tracking-widest text-slate-800"
+                  >
+                    ••••••••
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsPasswordModalOpen(true)}
+                    className="text-xs text-slate-400 hover:text-fuchsia-500"
+                  >
+                    Edit
+                  </button>
+                </div>
               </div>
             </div>
           </section>
