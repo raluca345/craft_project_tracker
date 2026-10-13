@@ -12,6 +12,7 @@ import SettingsPage from "./pages/SettingsPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import ResetPage from "./pages/ResetPasswordPage.jsx";
 import GonePage from "./pages/GonePage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 function loadUser() {
   const token = getToken();
@@ -169,6 +170,10 @@ export default function AppRouter() {
             <GonePage isLoggedIn={isLoggedIn} user={user} />
           </PublicOnlyRoute>
         }
+      />
+      <Route
+        path="*"
+        element={<NotFoundPage isLoggedIn={isLoggedIn} user={user} />}
       />
     </Routes>
   );
