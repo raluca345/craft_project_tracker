@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/apiAuth.js";
 import { getErrorMessage } from "../commons/errors.js";
 import FormField from "../ui/forms/FormField.jsx";
+import PasswordField from "../ui/forms/PasswordField.jsx";
 import AppHeader from "../ui/layout/AppHeader.jsx";
 
 const INPUT_STYLE =
@@ -68,17 +69,14 @@ export default function LoginPage({ isLoggedIn, user, onLogin }) {
             />
           </FormField>
 
-          <FormField label="Password">
-            <input
-              type="password"
-              id="login-password"
-              autoComplete="current-password"
-              className={INPUT_STYLE}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </FormField>
+          <PasswordField
+            label="Password"
+            id="login-password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
           <button
             type="submit"

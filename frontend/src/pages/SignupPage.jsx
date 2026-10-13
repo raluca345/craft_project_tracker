@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { register } from "../api/apiAuth.js";
 import { getErrorMessage } from "../commons/errors.js";
 import FormField from "../ui/forms/FormField.jsx";
+import PasswordField from "../ui/forms/PasswordField.jsx";
 import AppHeader from "../ui/layout/AppHeader.jsx";
 
 const INPUT_STYLE =
@@ -81,18 +82,15 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
             />
           </FormField>
 
-          <FormField label="Password">
-            <input
-              type="password"
-              id="signup-password"
-              autoComplete="new-password"
-              className={INPUT_STYLE}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-            />
-          </FormField>
+          <PasswordField
+            label="Password"
+            id="signup-password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+          />
 
           <button
             type="submit"
