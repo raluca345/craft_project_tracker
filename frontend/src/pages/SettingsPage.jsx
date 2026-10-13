@@ -12,6 +12,7 @@ import AppHeader from "../ui/layout/AppHeader.jsx";
 import Footer from "../ui/layout/Footer.jsx";
 import ErrorBox from "../ui/feedback/ErrorBox.jsx";
 import ChangePasswordDialog from "../ui/auth/ChangePasswordDialog.jsx";
+import { toast } from "sonner";
 
 const INPUT_STYLE =
   "rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-fuchsia-400 focus:outline-none";
@@ -54,6 +55,7 @@ export default function SettingsPage({
     try {
       const data = await uploadAvatar(file);
       onUserUpdate({ avatarKey: data.avatarKey, avatarUrl: data.avatarUrl });
+      toast.success("Your profile picture has been changed.");
     } catch (err) {
       console.error(err);
       setError(getErrorMessage(err));
@@ -75,6 +77,7 @@ export default function SettingsPage({
       const data = await rename(trimmed);
       onUserUpdate({ name: data.name });
       setEditingName(false);
+      toast.success("Your name has been changed.");
     } catch (err) {
       console.error(err);
       setError(getErrorMessage(err));
@@ -97,6 +100,7 @@ export default function SettingsPage({
       setToken(data.token);
       onUserUpdate({ email: data.email, token: data.token });
       setEditingEmail(false);
+      toast.success("Your email has been changed.");
     } catch (err) {
       console.error(err);
       setError(getErrorMessage(err));
