@@ -36,7 +36,7 @@ public class PasswordResetWorkflowService {
         UUID userId = passwordResetService.findUserIdByTokenOrThrow(token);
         User user = userService.getUserById(userId);
 
-        userService.changePassword(user, newPassword);
+        userService.setPassword(user, newPassword);
 
         passwordResetService.deleteByToken(token);
     }

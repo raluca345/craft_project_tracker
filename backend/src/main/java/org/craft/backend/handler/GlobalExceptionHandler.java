@@ -64,7 +64,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
-        return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password.");
+        String message = ex.getMessage();
+        if (message == null || message.isBlank() || message.equals("Bad credentials")) {
+            message = "Invalid email or password.";
+        }
+        return buildResponse(HttpStatus.UNAUTHORIZED, message);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
