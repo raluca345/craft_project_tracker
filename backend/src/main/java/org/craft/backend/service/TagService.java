@@ -12,7 +12,7 @@ import java.util.List;
 public class TagService {
     private final TagRepository tagRepository;
 
-    public Tag createTag(String name) {
+    private Tag createTag(String name) {
         Tag tag = new Tag(name);
         return tagRepository.save(tag);
     }

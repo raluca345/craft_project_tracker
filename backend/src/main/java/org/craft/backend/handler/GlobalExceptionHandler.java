@@ -2,6 +2,7 @@ package org.craft.backend.handler;
 
 import org.craft.backend.exceptions.EmailAlreadyTakenException;
 import org.craft.backend.exceptions.ImageFileException;
+import org.craft.backend.exceptions.NameAlreadyTakenException;
 import org.craft.backend.exceptions.PasswordResetTokenExpiredException;
 import org.craft.backend.exceptions.ProjectNotFoundException;
 import org.craft.backend.exceptions.ResourceNotFoundException;
@@ -15,10 +16,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+
 import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
@@ -39,6 +44,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyTakenException.class)
     public ResponseEntity<Map<String, Object>> handleEmailAlreadyTaken(EmailAlreadyTakenException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(NameAlreadyTakenException.class)
+    public ResponseEntity<Map<String, Object>> handleNameAlreadyTaken(NameAlreadyTakenException ex) {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
@@ -99,6 +109,17 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, errors);
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingParameter(MissingServletRequestParameterException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                "Missing required request parameter: " + ex.getParameterName());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleMessageNotReadable(HttpMessageNotReadableException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "Malformed request body.");
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, Object>> handleMaxUploadSize(MaxUploadSizeExceededException ex) {
         return buildResponse(HttpStatus.CONTENT_TOO_LARGE, "File is too large. Maximum upload size is 10MB.");
@@ -107,6 +128,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchKeyException.class)
     public ResponseEntity<Map<String, Object>> handleNoSuchKey(NoSuchKeyException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, "Image not found. It may have been deleted.");
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingServletRequest(MissingServletRequestPartException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "No file attached.");
     }
 
     @ExceptionHandler(SdkException.class)

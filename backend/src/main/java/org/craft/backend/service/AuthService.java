@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.craft.backend.dto.AuthResponse;
 import org.craft.backend.dto.LoginRequest;
 import org.craft.backend.dto.RegisterRequest;
+import org.craft.backend.exceptions.EmailAlreadyTakenException;
+import org.craft.backend.exceptions.NameAlreadyTakenException;
 import org.craft.backend.model.User;
 import org.craft.backend.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,14 @@ public class AuthService {
     private final ImageService imageService;
 
     public AuthResponse register(RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyTakenException("Email is already taken.");
+        }
+
+        if (userRepository.findByName(request.getName()).isPresent()) {
+            throw new NameAlreadyTakenException("Name is already taken.");
+        }
+
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());

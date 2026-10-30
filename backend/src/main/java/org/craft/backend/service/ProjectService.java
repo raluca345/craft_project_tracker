@@ -96,7 +96,7 @@ public class ProjectService {
         return toResponse(projectRepository.save(project));
     }
 
-    public ProjectResponse editProject(User user, UUID uuid, EditProjectRequest  request) {
+    public ProjectResponse editProject(User user, UUID uuid, EditProjectRequest request) {
 
         Project project = projectRepository.findByIdAndUser(uuid, user)
                 .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
@@ -135,7 +135,10 @@ public class ProjectService {
     }
 
     private List<Tag> getTagsByName(List<String> tagNames) {
-        return new ArrayList<>(tagNames.stream().map(tagService::getByNameOrCreate).toList());
+        return new ArrayList<>(tagNames.stream()
+                .filter(name -> name != null && !name.isBlank())
+                .map(tagService::getByNameOrCreate)
+                .toList());
     }
 
     private ProjectResponse toResponse(Project project) {
