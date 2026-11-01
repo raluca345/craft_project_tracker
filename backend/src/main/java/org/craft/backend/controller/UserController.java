@@ -68,4 +68,11 @@ public class UserController {
                 "avatarKey", uploaded.key(),
                 "avatarUrl", imageService.presignUrl(uploaded.key())));
     }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteAccount() {
+        User user = authHelper.getCurrentUser();
+        userService.delete(user.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
