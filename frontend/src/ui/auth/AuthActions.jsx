@@ -27,7 +27,7 @@ export default function AuthActions({ isLoggedIn, user, onLogout }) {
           <Avatar user={user} size="h-15 w-15" />
         </button>
         {open && (
-          <div className="absolute left-1/2 z-50 mt-4 w-56 -translate-x-1/2 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+          <div className="absolute right-0 z-50 mt-4 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
             <div className="border-b border-slate-100 px-4 py-3">
               <p className="text-sm font-semibold text-slate-800">
                 {user.name}

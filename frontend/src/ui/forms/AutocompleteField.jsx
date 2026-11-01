@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export default function AutocompleteField({
   label,
+  id,
   value,
   onChange,
   suggestions,
@@ -21,8 +22,9 @@ export default function AutocompleteField({
   );
 
   return (
-    <FormField label={label} error={error}>
+    <FormField label={label} error={error} id={id}>
       <input
+        id={id}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);

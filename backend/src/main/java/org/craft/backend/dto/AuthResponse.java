@@ -2,12 +2,15 @@ package org.craft.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.craft.backend.model.User;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class AuthResponse {
     private String token;
     private UUID id;

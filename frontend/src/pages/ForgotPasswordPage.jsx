@@ -58,7 +58,7 @@ export default function ForgotPasswordPage({ isLoggedIn, user }) {
 
           {!submitted && (
             <>
-              <FormField label="Email">
+              <FormField label="Email" id="forgot-email">
                 <input
                   type="email"
                   id="forgot-email"

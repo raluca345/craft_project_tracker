@@ -1,7 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AppHeader from "../ui/layout/AppHeader.jsx";
 
 export default function GonePage({ isLoggedIn, user }) {
+  const { state } = useLocation();
+  const expired = state?.expired ?? true;
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
       <AppHeader isLoggedIn={isLoggedIn} user={user} hideAuth />
@@ -9,11 +12,21 @@ export default function GonePage({ isLoggedIn, user }) {
       <main className="flex flex-1 items-center justify-center px-6 py-10">
         <div className="w-full max-w-sm text-center">
           <h1 className="text-2xl font-semibold text-slate-800">
-            Reset link expired
+            {expired ? "Reset link expired" : "Reset link no longer valid"}
           </h1>
           <p className="mt-2 text-sm text-slate-600">
-            This password reset link has expired. Password reset links are valid
-            for 10 minutes. You can request a new one below.
+            {expired ? (
+              <>
+                This password reset link has expired. Password reset links are
+                valid for 10 minutes. You can request a new one below.
+              </>
+            ) : (
+              <>
+                This password reset link is no longer valid. It may have already
+                been used, or replaced when a newer link was requested. You can
+                request a new one below.
+              </>
+            )}
           </p>
           <div className="mt-6 flex flex-col gap-2">
             <Link

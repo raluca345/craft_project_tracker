@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { IMAGE_ACCEPT, validateImageFile } from "../../commons/imageValidation";
 
 export default function ImageUploadField({
+  id,
   onFileSelected,
   onInvalid = () => {},
   existingImageUrl,
@@ -45,6 +46,7 @@ export default function ImageUploadField({
         {file ? "Change image" : "Choose an image"}
         <input
           type="file"
+          id={id}
           accept={IMAGE_ACCEPT}
           hidden
           onChange={handleChange}

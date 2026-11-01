@@ -21,7 +21,7 @@ export default function PasswordField({
   const [visible, setVisible] = useState(false);
 
   return (
-    <FormField label={label} error={error}>
+    <FormField label={label} error={error} id={id}>
       <span className="relative">
         <input
           type={visible ? "text" : "password"}

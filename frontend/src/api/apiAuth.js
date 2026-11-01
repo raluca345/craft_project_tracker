@@ -63,6 +63,14 @@ export async function changePassword(currentPassword, newPassword) {
   return handleResponse(res);
 }
 
+export async function deleteAccount() {
+  const res = await fetch(`${API_ROOT}/me`, {
+    method: "DELETE",
+    headers: { ...authHeaders() },
+  });
+  return handleResponse(res);
+}
+
 export async function forgotPassword(email) {
   const res = await fetch(`${API_ROOT}/auth/password-reset/request`, {
     method: "POST",

@@ -57,7 +57,7 @@ export default function LoginPage({ isLoggedIn, user, onLogin }) {
             </p>
           )}
 
-          <FormField label="Email">
+          <FormField label="Email" id="login-email">
             <input
               type="email"
               id="login-email"

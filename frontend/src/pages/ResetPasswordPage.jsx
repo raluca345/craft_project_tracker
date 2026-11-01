@@ -28,7 +28,7 @@ export default function ResetPasswordPage({ isLoggedIn, user }) {
         await verifyResetToken(token);
       } catch (err) {
         if (err instanceof ApiError && (err.status === 410 || err.status === 404)) {
-          navigate("/gone");
+          navigate("/gone", { state: { expired: err.status === 410 } });
         }
       } finally {
         setLoading(false);
@@ -55,7 +55,7 @@ export default function ResetPasswordPage({ isLoggedIn, user }) {
     } catch (err) {
       console.error(err);
       if (err instanceof ApiError && (err.status === 410 || err.status === 404)) {
-        navigate("/gone");
+        navigate("/gone", { state: { expired: err.status === 410 } });
         return;
       }
       setError(getErrorMessage(err));

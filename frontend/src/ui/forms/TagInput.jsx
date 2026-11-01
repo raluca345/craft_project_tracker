@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { autocomplete } from "../../api/apiTags";
 
-export default function TagInput({ value, onChange }) {
+export default function TagInput({ id, value, onChange }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -65,6 +65,7 @@ export default function TagInput({ value, onChange }) {
 
       <div className="relative">
         <input
+          id={id}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}

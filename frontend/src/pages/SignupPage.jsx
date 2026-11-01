@@ -58,7 +58,7 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
             </p>
           )}
 
-          <FormField label="Name">
+          <FormField label="Name" id="signup-name">
             <input
               type="text"
               id="signup-name"
@@ -70,7 +70,7 @@ export default function SignupPage({ isLoggedIn, user, onSignup }) {
             />
           </FormField>
 
-          <FormField label="Email">
+          <FormField label="Email" id="signup-email">
             <input
               type="email"
               id="signup-email"

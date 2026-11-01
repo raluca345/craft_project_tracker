@@ -1,9 +1,11 @@
 import { useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   uploadAvatar,
   rename,
   changeEmail,
   changePassword,
+  deleteAccount as deleteAccountApi,
 } from "../api/apiAuth";
 import { setToken } from "../api/apiCore";
 import { getErrorMessage } from "../commons/errors";
@@ -12,6 +14,7 @@ import AppHeader from "../ui/layout/AppHeader.jsx";
 import Footer from "../ui/layout/Footer.jsx";
 import ErrorBox from "../ui/feedback/ErrorBox.jsx";
 import ChangePasswordDialog from "../ui/auth/ChangePasswordDialog.jsx";
+import DeleteAccountDialog from "../ui/auth/DeleteAccountDialog.jsx";
 import { toast } from "sonner";
 
 const INPUT_STYLE =
@@ -23,6 +26,7 @@ export default function SettingsPage({
   onLogout,
   onUserUpdate,
 }) {
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
@@ -37,9 +41,25 @@ export default function SettingsPage({
 
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   const handleClosePasswordDialog = useCallback(() => {
     setIsPasswordModalOpen(false);
   }, []);
+
+  async function handleDeleteAccount() {
+    setError(null);
+    try {
+      await deleteAccountApi();
+      // Account is gone: clear the session and send the user to the landing page.
+      onLogout();
+      toast.success("Your account has been deleted.");
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      setError(getErrorMessage(err));
+    }
+  }
 
   function handlePickFile() {
     fileRef.current?.click();
@@ -121,6 +141,11 @@ export default function SettingsPage({
             onCancel={handleClosePasswordDialog}
             onSave={changePassword}
           />
+          <DeleteAccountDialog
+            isOpen={isDeleteDialogOpen}
+            onCancel={() => setIsDeleteDialogOpen(false)}
+            onConfirm={handleDeleteAccount}
+          />
 
           <section className="mb-10">
             <div className="flex items-center gap-6">
@@ -140,6 +165,7 @@ export default function SettingsPage({
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
                 className="hidden"
+                aria-label="Avatar image"
                 onChange={handleFileChange}
               />
               <div>
@@ -280,6 +306,32 @@ export default function SettingsPage({
                     Edit
                   </button>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-10">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-red-500">
+              Danger zone
+            </h2>
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-slate-800">
+                    Delete account
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    Permanently delete your account and all your projects. This
+                    cannot be undone.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                  className="shrink-0 rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </section>

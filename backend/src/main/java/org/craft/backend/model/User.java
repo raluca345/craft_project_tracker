@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
     private String avatarKey;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Project> projects = new ArrayList<>();
 

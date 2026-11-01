@@ -108,7 +108,7 @@ export default function ProjectModal({
         <h2 className="text-lg font-semibold text-slate-800">
           {existingProject ? "Edit Project" : "New Project"}
         </h2>
-        <FormField label="Pattern Name" error={errors.patternName}>
+        <FormField label="Pattern Name" error={errors.patternName} id="project-name">
           <input
             type="text"
             id="project-name"
@@ -120,6 +120,7 @@ export default function ProjectModal({
         </FormField>
         <AutocompleteField
           label="Craft"
+          id="project-craft"
           value={formState.craft}
           onChange={(value) => updateField("craft", value)}
           suggestions={CRAFT_SUGGESTIONS}
@@ -127,12 +128,13 @@ export default function ProjectModal({
         />
         <AutocompleteField
           label="Tool"
+          id="project-tool"
           value={formState.toolType}
           onChange={(value) => updateField("toolType", value)}
           suggestions={TOOL_SUGGESTIONS}
           error={errors.toolType}
         />
-        <FormField label="Tool Size" error={errors.toolSize}>
+        <FormField label="Tool Size" error={errors.toolSize} id="tool-size">
           <input
             type="text"
             id="tool-size"
@@ -142,7 +144,7 @@ export default function ProjectModal({
             onChange={(e) => updateField("toolSize", e.target.value)}
           />
         </FormField>
-        <FormField label="Yarn Weight" error={errors.yarnWeightCategory}>
+        <FormField label="Yarn Weight" error={errors.yarnWeightCategory} id="yarn-weight">
           <input
             type="text"
             id="yarn-weight"
@@ -154,7 +156,7 @@ export default function ProjectModal({
             onChange={(e) => updateField("yarnWeightCategory", e.target.value)}
           />
         </FormField>
-        <FormField label="Yarn Used" error={errors.yarnUsed}>
+        <FormField label="Yarn Used" error={errors.yarnUsed} id="yarn-used">
           <input
             type="text"
             id="yarn-used"
@@ -166,7 +168,7 @@ export default function ProjectModal({
         </FormField>
         {existingProject && (
           <>
-            <FormField label="Amount Used" error={errors.amountUsed}>
+            <FormField label="Amount Used" error={errors.amountUsed} id="amount-used">
               <div className="relative">
                 <input
                   type="number"
@@ -183,7 +185,7 @@ export default function ProjectModal({
                 </span>
               </div>
             </FormField>
-            <FormField label="Status" error={errors.status}>
+            <FormField label="Status" error={errors.status} id="project-status">
               <select
                 id="project-status"
                 className={errors.status ? INPUT_ERROR_STYLE : INPUT_STYLE}
@@ -200,9 +202,10 @@ export default function ProjectModal({
             </FormField>
           </>
         )}
-        <FormField label="Image" error={errors.imageKey}>
+        <FormField label="Image" error={errors.imageKey} id="project-image">
           <ImageUploadField
             key={existingProject?.id ?? "new"}
+            id="project-image"
             existingImageUrl={existingProject?.imageUrl ?? null}
             onFileSelected={handleFileSelected}
             onInvalid={(message) =>
@@ -210,7 +213,7 @@ export default function ProjectModal({
             }
           />
         </FormField>
-        <FormField label="Notes" error={errors.notes}>
+        <FormField label="Notes" error={errors.notes} id="notes">
           <textarea
             id="notes"
             rows="3"
@@ -220,8 +223,9 @@ export default function ProjectModal({
             onChange={(e) => updateField("notes", e.target.value)}
           />
         </FormField>
-        <FormField label="Tags" error={errors.tags}>
+        <FormField label="Tags" error={errors.tags} id="project-tags">
           <TagInput
+            id="project-tags"
             value={formState.tags}
             onChange={(tags) => updateField("tags", tags)}
           />
